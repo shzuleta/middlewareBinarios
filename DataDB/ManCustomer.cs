@@ -19,6 +19,8 @@ public partial class ManCustomer
 
     public string? CreateUser { get; set; }
 
+    public byte[]? Logo { get; set; }
+
     public virtual ICollection<CustomerBank> CustomerBanks { get; set; } = new List<CustomerBank>();
 
     public virtual ICollection<ManageToken> ManageTokens { get; set; } = new List<ManageToken>();
