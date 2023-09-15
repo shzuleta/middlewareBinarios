@@ -88,8 +88,8 @@ namespace FBapiService.Controllers
                 ManageTokenCrud objtoken = new ManageTokenCrud();
                 ManageToken TOK = new ManageToken();
                 TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower());
-
-                if (TOK.UserName != null) 
+                
+                if (!TOK.UserName.Equals(null))
                 {
                     rtoken.descError = "antes de generar el token";
                     Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
