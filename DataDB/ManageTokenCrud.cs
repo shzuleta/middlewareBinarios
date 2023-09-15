@@ -2,13 +2,14 @@
 {
     public class ManageTokenCrud
     {
-        public dynamic GetUserToken(string username, string password)
+        public ManageToken GetUserToken(string username, string password)
         {
+            ManageToken registro = new ManageToken();
             try
             {
                 using (var context = new BanticfintechContext())
                 {
-                    ManageToken registro = new ManageToken();
+                    //ManageToken registro = new ManageToken();
                     //var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0" && p.ExpirationTime >= expirationMinutes.Date ).ToList(); 
                     var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0").ToList();
 
@@ -24,7 +25,8 @@
             }
             catch (Exception ex)
             {
-                return "de where" + ex.Message;
+                return registro;
+                //return "de where" + ex.Message;
                 //return 0;
             }
         }

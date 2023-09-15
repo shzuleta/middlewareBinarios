@@ -91,7 +91,9 @@ namespace FBapiService.Controllers
 
                 if (TOK.UserName != null) 
                 {
+                    rtoken.descError = "antes de generar el token";
                     Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
+                    rtoken.descError = "despues de generar el token";
                 }
                 else
                 {
