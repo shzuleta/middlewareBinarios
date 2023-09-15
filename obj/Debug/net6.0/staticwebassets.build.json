@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "mr7x1gNah17XKxfdALdjpe3Va3JbJA5h2ak2Zor0fEM=",
+  "Source": "FBapiService",
+  "BasePath": "_content/FBapiService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
