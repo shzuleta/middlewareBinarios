@@ -10,7 +10,7 @@ namespace FBapiService.DataDB
         {
             try
             {
-                using (var dbContext = new BanticanFintechContext())
+                using (var dbContext = new BanticfintechContext())
                 {
                     // Crear una nueva entidad y asignarle valores
                     Notification dataLog = new Notification();
@@ -46,7 +46,7 @@ namespace FBapiService.DataDB
         {
             try 
             {
-                using (var dbContext = new BanticanFintechContext())
+                using (var dbContext = new BanticfintechContext())
                 {
                     Notification registros1 = new Notification();
                     var registros = dbContext.Notifications.Where(p => p.IdQr == IdQR && p.Status == "0").ToList();

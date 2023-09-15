@@ -11,7 +11,7 @@ namespace FBapiService.DataDB
         {
             try
             {
-                using (var dbContext = new BanticanFintechContext())
+                using (var dbContext = new BanticfintechContext())
                 {
                     int IdToUpdate = idLOG; // ID del log que deseas actualizar
                     var LogToUpdate = dbContext.ManageQrs.Find(IdToUpdate);
@@ -51,7 +51,7 @@ namespace FBapiService.DataDB
         {
             try
             {
-                using (var dbContext = new BanticanFintechContext())
+                using (var dbContext = new BanticfintechContext())
                 {
                     // Crear una nueva entidad y asignarle valores
                     ManageQr dataLog = new ManageQr();

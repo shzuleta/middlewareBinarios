@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<BanticanFintechContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL")));
+builder.Services.AddDbContext<BanticfintechContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL")));
 
 builder.Services.AddControllers();
 

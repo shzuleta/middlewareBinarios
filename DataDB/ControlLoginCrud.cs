@@ -9,7 +9,7 @@ namespace FBapiService.DataDB
         {
             try
             {
-                using (var context = new BanticanFintechContext())
+                using (var context = new BanticfintechContext())
                 {
                     ControlLogin registros1 = new ControlLogin();
                     var registros = context.ControlLogins.Where(p => p.IdCustomer == client && p.IdBanco == bank).ToList();
@@ -45,7 +45,7 @@ namespace FBapiService.DataDB
 
                 if (objLogin.IdCustomer != 0)
                 {
-                    using (var context = new BanticanFintechContext())
+                    using (var context = new BanticfintechContext())
                     {
                         ManageQr registros1 = new ManageQr();
                         var registros = context.ManageQrs.Where(p => p.IdQr == IdQR && p.Status == "0" && p.TypeRequest.TrimEnd() == "DATAQR").ToList();
@@ -80,7 +80,7 @@ namespace FBapiService.DataDB
         {
             try
             {
-                    using (var context = new BanticanFintechContext())
+                    using (var context = new BanticfintechContext())
                     {
                         ManageQr registros1 = new ManageQr();
                         var registros = context.ManageQrs.Where(p => p.IdQr == IdQR && p.Status == "0" && p.TypeRequest.TrimEnd() != "CANCEL" && p.TypeRequest.TrimEnd() == "DATAQR").ToList();

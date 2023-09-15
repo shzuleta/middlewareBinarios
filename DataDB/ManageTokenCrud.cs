@@ -6,7 +6,7 @@
         {
             try
             {
-                using (var context = new BanticanFintechContext())
+                using (var context = new BanticfintechContext())
                 {
                     ManageToken registro = new ManageToken();
                     var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0" && p.ExpirationTime >= expirationMinutes ).ToList(); 

@@ -6,7 +6,7 @@
         {
             try
             {
-                using (var dbContext = new BanticanFintechContext())
+                using (var dbContext = new BanticfintechContext())
                 {
                     // Crear una nueva entidad y asignarle valores
                     CustomerBank dataLog = new CustomerBank();

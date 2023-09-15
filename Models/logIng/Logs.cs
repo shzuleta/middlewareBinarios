@@ -42,127 +42,127 @@ namespace Models.logIng
 
     class History
     {
-        private readonly BanticanFintechContext _DBContext;
+        //private readonly BanticanFintechContext _DBContext;
 
-        public History()
-        {
-        }
+        //public History()
+        //{
+        //}
 
-        public History(BanticanFintechContext dbContext)
-        {
-            _DBContext = dbContext;
-        }
-        public string RegisterLog(Logs DataLog)
-        {
+        //public History(BanticanFintechContext dbContext)
+        //{
+        //    _DBContext = dbContext;
+        //}
+        //public string RegisterLog(Logs DataLog)
+        //{
 
-            var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile("archivodos.json", optional: true, reloadOnChange: true);
-            IConfiguration configuration = builder.Build();
-
-
-            using (SqlConnection conex = new SqlConnection(configuration["Conex"]))
-            {
-                try
-                {
-                    conex.Open();
-                    string sql = "insert into historyLog ( datesend , daterequest , [level] , bank , currency , gloss , amount , expirationdate , singleuse, additionaldata , destinationaccountid , jsoninput , idQR , success , messageoutput , jsonoutput,codeInter) values ( @datesend, @daterequest, @level, @bank, @currency, @gloss, @amount, @expirationdate, @singleuse, @additionaldata, @destinationaccountid, @jsoninput, @idQR, @success, @messageoutput, @jsonoutput,@codeIntern )";
-
-                    using (SqlCommand cmd = new SqlCommand(sql, conex))
-                    {
-                        //cmd.Parameters.AddWithValue("@id", 0);
-                        cmd.Parameters.AddWithValue("@datesend", DataLog.dateSend);
-                        cmd.Parameters.AddWithValue("@daterequest", DataLog.dateRequest);
-                        cmd.Parameters.AddWithValue("@level", DataLog.level);
-                        cmd.Parameters.AddWithValue("@bank", DataLog.bank);
-                        cmd.Parameters.AddWithValue("@currency", DataLog.currency);
-                        cmd.Parameters.AddWithValue("@gloss", DataLog.gloss);
-                        cmd.Parameters.AddWithValue("@amount", DataLog.amount);
-                        cmd.Parameters.AddWithValue("@expirationdate", DataLog.expirationDate);
-                        cmd.Parameters.AddWithValue("@singleuse", DataLog.singleUse);
-                        cmd.Parameters.AddWithValue("@additionaldata", DataLog.additionalData);
-                        cmd.Parameters.AddWithValue("@destinationaccountid", DataLog.destinationAccountId);
-                        cmd.Parameters.AddWithValue("@jsoninput", DataLog.jsonInput);
-                        cmd.Parameters.AddWithValue("@idQR", DataLog.idQR);
-                        cmd.Parameters.AddWithValue("@success", DataLog.success);
-                        cmd.Parameters.AddWithValue("@messageoutput", DataLog.messageOutput);
-                        cmd.Parameters.AddWithValue("@jsonoutput", "");// DataLog.jsonOutput);
-                        cmd.Parameters.AddWithValue("@codeintern", DataLog.codeIntern);
-
-                        int rows = cmd.ExecuteNonQuery();
-                    }
+        //    var builder = new ConfigurationBuilder()
+        //    .SetBasePath(Directory.GetCurrentDirectory())
+        //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+        //    .AddJsonFile("archivodos.json", optional: true, reloadOnChange: true);
+        //    IConfiguration configuration = builder.Build();
 
 
-                }
-                catch (Exception ex)
-                {
-                    return ex.Message;
-                    throw;
-                }
-                finally
-                {
-                    conex.Close();
+        //    using (SqlConnection conex = new SqlConnection(configuration["Conex"]))
+        //    {
+        //        try
+        //        {
+        //            conex.Open();
+        //            string sql = "insert into historyLog ( datesend , daterequest , [level] , bank , currency , gloss , amount , expirationdate , singleuse, additionaldata , destinationaccountid , jsoninput , idQR , success , messageoutput , jsonoutput,codeInter) values ( @datesend, @daterequest, @level, @bank, @currency, @gloss, @amount, @expirationdate, @singleuse, @additionaldata, @destinationaccountid, @jsoninput, @idQR, @success, @messageoutput, @jsonoutput,@codeIntern )";
 
-                }
-            }
+        //            using (SqlCommand cmd = new SqlCommand(sql, conex))
+        //            {
+        //                //cmd.Parameters.AddWithValue("@id", 0);
+        //                cmd.Parameters.AddWithValue("@datesend", DataLog.dateSend);
+        //                cmd.Parameters.AddWithValue("@daterequest", DataLog.dateRequest);
+        //                cmd.Parameters.AddWithValue("@level", DataLog.level);
+        //                cmd.Parameters.AddWithValue("@bank", DataLog.bank);
+        //                cmd.Parameters.AddWithValue("@currency", DataLog.currency);
+        //                cmd.Parameters.AddWithValue("@gloss", DataLog.gloss);
+        //                cmd.Parameters.AddWithValue("@amount", DataLog.amount);
+        //                cmd.Parameters.AddWithValue("@expirationdate", DataLog.expirationDate);
+        //                cmd.Parameters.AddWithValue("@singleuse", DataLog.singleUse);
+        //                cmd.Parameters.AddWithValue("@additionaldata", DataLog.additionalData);
+        //                cmd.Parameters.AddWithValue("@destinationaccountid", DataLog.destinationAccountId);
+        //                cmd.Parameters.AddWithValue("@jsoninput", DataLog.jsonInput);
+        //                cmd.Parameters.AddWithValue("@idQR", DataLog.idQR);
+        //                cmd.Parameters.AddWithValue("@success", DataLog.success);
+        //                cmd.Parameters.AddWithValue("@messageoutput", DataLog.messageOutput);
+        //                cmd.Parameters.AddWithValue("@jsonoutput", "");// DataLog.jsonOutput);
+        //                cmd.Parameters.AddWithValue("@codeintern", DataLog.codeIntern);
+
+        //                int rows = cmd.ExecuteNonQuery();
+        //            }
 
 
-            return "";
-        }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return ex.Message;
+        //            throw;
+        //        }
+        //        finally
+        //        {
+        //            conex.Close();
 
-        public string RegisterLog()
-        {
-            HistoryLog dataLog = new HistoryLog();
+        //        }
+        //    }
 
-            dataLog.Id = 1;
-            dataLog.Datesend = DateTime.Now;
-            dataLog.Daterequest = DateTime.Now;
-            dataLog.Level = "INFO";
-            dataLog.Bank = "555"; //codigo de BNB 
-            dataLog.CodeInter = "1111";
 
-            dataLog.Currency = "BOB";
-            dataLog.Gloss = "";
-            dataLog.Amount = 1;
-            dataLog.Expirationdate = DateTime.Parse("2023-07-31");
-            dataLog.Singleuse = "1";
-            dataLog.Additionaldata = "";
-            dataLog.Destinationaccountid = "";
-            dataLog.Jsoninput = "";
+        //    return "";
+        //}
 
-            dataLog.IdQr = "";
-            dataLog.Messageoutput = "";
-            dataLog.Jsonoutput = "";
+        //public string RegisterLog()
+        //{
+        //    HistoryLog dataLog = new HistoryLog();
 
-            //if ((bool)objResobj.success)
-            //{
-            dataLog.Level = "WARNING";
-            dataLog.Success = "1";
-            //}
-            //else
-            //{
-            //    dataLog.Success = "0";
-            //}
+        //    dataLog.Id = 1;
+        //    dataLog.Datesend = DateTime.Now;
+        //    dataLog.Daterequest = DateTime.Now;
+        //    dataLog.Level = "INFO";
+        //    dataLog.Bank = "555"; //codigo de BNB 
+        //    dataLog.CodeInter = "1111";
 
-            try
-            {
-                _DBContext.HistoryLogs.Add(dataLog);
-                _DBContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                //objResobj.codError = ErrorType.er_NoRegistroLog.Id.ToString();
-                //objResobj.descError = ErrorType.er_NoRegistroLog.Name.ToString() + "---" + ex.Message;
-                throw;
-            }
-            finally
-            {
+        //    dataLog.Currency = "BOB";
+        //    dataLog.Gloss = "";
+        //    dataLog.Amount = 1;
+        //    dataLog.Expirationdate = DateTime.Parse("2023-07-31");
+        //    dataLog.Singleuse = "1";
+        //    dataLog.Additionaldata = "";
+        //    dataLog.Destinationaccountid = "";
+        //    dataLog.Jsoninput = "";
 
-            }
+        //    dataLog.IdQr = "";
+        //    dataLog.Messageoutput = "";
+        //    dataLog.Jsonoutput = "";
 
-            return "OK";
-        }
+        //    //if ((bool)objResobj.success)
+        //    //{
+        //    dataLog.Level = "WARNING";
+        //    dataLog.Success = "1";
+        //    //}
+        //    //else
+        //    //{
+        //    //    dataLog.Success = "0";
+        //    //}
+
+        //    try
+        //    {
+        //        _DBContext.HistoryLogs.Add(dataLog);
+        //        _DBContext.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //objResobj.codError = ErrorType.er_NoRegistroLog.Id.ToString();
+        //        //objResobj.descError = ErrorType.er_NoRegistroLog.Name.ToString() + "---" + ex.Message;
+        //        throw;
+        //    }
+        //    finally
+        //    {
+
+        //    }
+
+        //    return "OK";
+        //}
     }
     }
 
