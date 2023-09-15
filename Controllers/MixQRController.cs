@@ -87,7 +87,7 @@ namespace FBapiService.Controllers
             {
                 ManageTokenCrud objtoken = new ManageTokenCrud();
                 ManageToken TOK = new ManageToken();
-                TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower(), value.expiration.Date);
+                TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower());
 
                 if (TOK.UserName != null) 
                 {
