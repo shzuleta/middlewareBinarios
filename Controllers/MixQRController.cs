@@ -88,19 +88,19 @@ namespace FBapiService.Controllers
                 ManageTokenCrud objtoken = new ManageTokenCrud();
                 ManageToken TOK = new ManageToken();
                 TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower());
-                
-                if (!TOK.UserName.Equals(null))
-                {
-                    rtoken.descError = "antes de generar el token";
-                    Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
-                    rtoken.descError = "despues de generar el token";
-                }
-                else
-                {
-                    rtoken.codError = ErrorType.er_TokenInvalido.Id.ToString();
-                    rtoken.descError = ErrorType.er_TokenInvalido.Name.ToString();
-                }
-               
+
+                //if (!TOK.UserName.Equals(null))
+                //{
+                //    rtoken.descError = "antes de generar el token";
+                Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
+                //    rtoken.descError = "despues de generar el token";
+                //}
+                //else
+                //{
+                //    rtoken.codError = ErrorType.er_TokenInvalido.Id.ToString();
+                //    rtoken.descError = ErrorType.er_TokenInvalido.Name.ToString();
+                //}
+
 
             }
             catch (Exception e)
