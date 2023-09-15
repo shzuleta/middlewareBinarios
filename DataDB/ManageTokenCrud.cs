@@ -23,7 +23,7 @@
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return "de where" + ex.Message;
                 //return 0;
             }
         }
