@@ -104,7 +104,7 @@ namespace FBapiService.Controllers
             catch (Exception e)
             {
                 rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
-                rtoken.descError = e.Message;
+                rtoken.descError = "no entro a BD " + e.Message;
             }
 
             rtoken.token = Token;
