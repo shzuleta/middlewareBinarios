@@ -83,30 +83,31 @@ namespace FBapiService.Controllers
             var jwtTokenGenerator = new FBJwtTokenGenerator(_Configu);
 
             // Generar el token
+            ManageToken TOK = new ManageToken();
             try 
             {
                 ManageTokenCrud objtoken = new ManageTokenCrud();
-                ManageToken TOK = new ManageToken();
+               
                 TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower());
 
-                //if (!TOK.UserName.Equals(null))
-                //{
-                //    rtoken.descError = "antes de generar el token";
-                Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
-                //    rtoken.descError = "despues de generar el token";
-                //}
-                //else
-                //{
-                //    rtoken.codError = ErrorType.er_TokenInvalido.Id.ToString();
-                //    rtoken.descError = ErrorType.er_TokenInvalido.Name.ToString();
-                //}
+                if (!TOK.UserName.Equals(null))
+                {
+                    rtoken.descError = "antes de generar el token";
+                    Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
+                    rtoken.descError = "despues de generar el token";
+                }
+                else
+                {
+                    rtoken.codError = ErrorType.er_TokenInvalido.Id.ToString();
+                    rtoken.descError = ErrorType.er_TokenInvalido.Name.ToString();
+                }
 
 
             }
             catch (Exception e)
             {
                 rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
-                rtoken.descError = "no entro a BD " + e.Message;
+                rtoken.descError = "no entro a BD " + TOK.Type.ToString() + e.Message;
             }
 
             rtoken.token = Token;
