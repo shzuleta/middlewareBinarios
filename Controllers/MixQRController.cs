@@ -9,6 +9,7 @@ using FBapiService.Models.Util;
 using Microsoft.AspNetCore.Authorization;
 using FBapiService.Constant;
 using FBapiService.DataDB;
+using Newtonsoft.Json.Linq;
 
 namespace FBapiService.Controllers
 {
@@ -66,19 +67,15 @@ namespace FBapiService.Controllers
             if (value.expiration.Equals("0"))
             {
                 rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
-                rtoken.descError = "El campo expirationMinutes no puede ser 0";
+                rtoken.descError = "El campo expiration no puede ser 0";
                 return rtoken;
             }
-
-            //var currentUser = UserConstant.User.FirstOrDefault(user => user.username.ToLower() == value.username.ToLower() &&
-            //user.password == value.password);
-
-            //if (currentUser == null)
-            //{
-            //    rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
-            //    rtoken.descError = " username o password incorrectos";
-            //    return rtoken;
-            //}
+            if (value.expiration == null)
+            {
+                rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
+                rtoken.descError = "El campo expiration no puede ser nulo";
+                return rtoken;
+            }
 
             var jwtTokenGenerator = new FBJwtTokenGenerator(_Configu);
 
@@ -90,29 +87,39 @@ namespace FBapiService.Controllers
                
                 TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower());
 
-                if (!TOK.UserName.Equals(null))
-                {
-                    rtoken.descError = "antes de generar el token";
-                    Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
-                    rtoken.descError = "despues de generar el token";
-                }
-                else
+                if (TOK.UserName == null)
                 {
                     rtoken.codError = ErrorType.er_TokenInvalido.Id.ToString();
                     rtoken.descError = ErrorType.er_TokenInvalido.Name.ToString();
                 }
-
-
+                else
+                {
+                    Token = jwtTokenGenerator.GenerateToken(value.username, value.password, value.expiration);
+                }
             }
             catch (Exception e)
             {
                 rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
-                rtoken.descError = "no entro a BD " + TOK.Type.ToString() + e.Message;
+                rtoken.descError =  e.Message;
             }
 
             rtoken.token = Token;
 
             return rtoken;
+        }
+
+        [HttpGet]
+        [Route("getFBUserData")]
+        public async Task<RespUserData> getUserData(string username, string password)
+        {
+            var objSAAS = new ApiBantic();
+            //var identity = Thread.CurrentPrincipal.Identity;
+            //objSAAS.Usuario = User.Identity.Name;// identity.Name;
+            var objRespuesta = new RespUserData();
+            objRespuesta = await objSAAS.GetUserData(username, password);
+
+            return objRespuesta;
+
         }
 
         [HttpPost]
@@ -256,7 +263,7 @@ namespace FBapiService.Controllers
             //var identity = Thread.CurrentPrincipal.Identity;
             //objSAAS.Usuario = identity.Name;
             var objRespuesta = new RespQRNotification();
-            objRespuesta = await objSAAS.QRNotification(value, "BNB");
+            objRespuesta = objSAAS.QRNotification(value, "BNB");
 
             return objRespuesta;
         }
@@ -270,7 +277,7 @@ namespace FBapiService.Controllers
             //var identity = Thread.CurrentPrincipal.Identity;
             //objSAAS.Usuario = identity.Name;
             var objRespuesta = new RespGetQRNotificaction();
-            //objRespuesta = await objSAAS.GetQRNotificaction(value);
+            objRespuesta = objSAAS.GetQRNotificaction(value);
 
             return objRespuesta;
         }

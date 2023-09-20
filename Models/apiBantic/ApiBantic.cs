@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.logIng;
 using FBapiService.Models.GeneraQR;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace Models.apiBantic
 {
@@ -150,26 +151,34 @@ namespace Models.apiBantic
                 ControlLogin objControl = new ControlLogin();
                 objControl = objLogin.GetClienteBanco(dataQR.codClient, dataQR.codBank);
 
-                if(objControl.IdCustomer != 0) 
-                { 
-                    //servicios de BNB
-                    respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
-
-                    respQRData sQrData = await objQrBNB.ObtenerQRData(objBNB, token.message);
-
-                    objRespuesta.id = sQrData.id;
-                    objRespuesta.qr = sQrData.qr;   
-                    objRespuesta.codTransaction = dataQR.codTransaction;
-                    objRespuesta.success = sQrData.success;
-                    objRespuesta.message = sQrData.message; 
-                    objRespuesta.codError = sQrData.codError;
-                    objRespuesta.descError = sQrData.descError;
-
-                }
-                else
+                if (objControl.ExpirationTime >= DateTime.Now)
                 {
-                    objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
-                    objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    if (objControl.IdCustomer != 0)
+                    {
+                        //servicios de BNB
+                        respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
+
+                        respQRData sQrData = await objQrBNB.ObtenerQRData(objBNB, token.message);
+
+                        objRespuesta.id = sQrData.id;
+                        objRespuesta.qr = sQrData.qr;
+                        objRespuesta.codTransaction = dataQR.codTransaction;
+                        objRespuesta.success = sQrData.success;
+                        objRespuesta.message = sQrData.message;
+                        objRespuesta.codError = sQrData.codError;
+                        objRespuesta.descError = sQrData.descError;
+
+                    }
+                    else
+                    {
+                        objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                        objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    }
+                }     
+                else 
+                { 
+                    objRespuesta.codError = ErrorType.er_TokenInvalido.ToString();
+                    objRespuesta.descError = ErrorType.er_TokenInvalido.Name.ToString();
                 }
 
                 objManageQR.ActualizarManageQR(objRespuesta.id, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--" + objRespuesta.descError, null, IdLog, null, "DATAQR");
@@ -397,7 +406,7 @@ namespace Models.apiBantic
             return objRespuesta;
         }
 
-        public async Task<RespQRNotification> QRNotification(QRNotification value, string usuario) 
+        public RespQRNotification QRNotification(QRNotification value, string usuario)
         {
             var objQrBNB = new QrBNB.QrBNB();
             var objRespuesta = new RespQRNotification();
@@ -488,44 +497,23 @@ namespace Models.apiBantic
 
                 //solo registrara los datos de la notificacion que llega del Banco
                 var IdLog = objNotQR.RegistrarNotificationQR(value.QRId, value.Gloss, value.sourceBankId, value.originName,
-                    value.VoucherId, value.TransactionDateTime, value.additionalData, "","0", usuario);
+                    value.VoucherId, value.TransactionDateTime, value.additionalData, "", "0", usuario);
 
-                //////Validar datos con BD middleware  IdQR para notificar si existe el idQR
-                //var control = "";
-                //control = objQR.GetIdQR(value.QRId);
-
-                //if (control != "")
-                //{
-                //    //enviar la notificacion a odoo o FintechBantic
-                //    respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
-
-                //    //RespQRStatus sQrData = await objQrBNB.ObtenerQREstado(value, token.message);
-                //    //objRespuesta.idQR = sQrData.id;
-                //    //objRespuesta.codTransaction = value.codTransaction;
-                //    //objRespuesta.statusId = sQrData.statusId;
-                //    //objRespuesta.expirationDate = sQrData.expirationDate;
-                //    //objRespuesta.voucherId = sQrData.voucherId;
-                //    //objRespuesta.success = sQrData.success;
-                //    //objRespuesta.message = sQrData.message;
-                //    //objRespuesta.codError = sQrData.codError;
-                //    //objRespuesta.descError = sQrData.descError;
-                //}
-                //else
-                //{
-                //    if (control == "")
-                //    {
-                //        objRespuesta.success = false;
-                //        objRespuesta.message = "No existe el QRId " + value.QRId.ToString();
-                //    }
-                //}
-
+                if (IdLog is string)
+                {
+                    objRespuesta.success = false;
+                    objRespuesta.message = IdLog;
+                }
+                else
+                {
+                    objRespuesta.success = true;
+                    objRespuesta.message = "OK";
+                }
             }
             catch (Exception ex)
             {
                 objRespuesta.success = false;
                 objRespuesta.message = ex.Message;
-                //objRespuesta.codError = ErrorType.er_Inesperado.Id.ToString();
-                //objRespuesta.descError = ErrorType.er_Inesperado.Name.ToString() + "---" + ex.Message;
             }
 
             objQrBNB.Dispose();
@@ -533,62 +521,168 @@ namespace Models.apiBantic
             return objRespuesta;
         }
 
-        //public async Task<RespGetQRNotificaction> GetQRNotificaction(GetQRNotification value)
-        //{
-        //    var objNotification = new GetQRNotification();
-        //    RespGetQRNotificaction objRespuesta = new RespGetQRNotificaction();
-        //    var objNotQR = new NotificactionCrud();
-        //    var objLogin = new ControlLoginCrud();
+        public RespGetQRNotificaction GetQRNotificaction(GetQRNotification value)
+        {
+            var objNotification = new GetQRNotification();
+            RespGetQRNotificaction objRespuesta = new RespGetQRNotificaction();
+            var objNotQR = new NotificactionCrud();
+            var objLogin = new ControlLoginCrud();
 
-        //    if (value.QRId.Equals(0))
-        //    {
-        //        objRespuesta.codError = ErrorType.er_SinidQR.Id.ToString();
-        //        objRespuesta.descError = ErrorType.er_SinidQR.Name.ToString();
-        //        return objRespuesta;
-        //    }
-        //    if (value.codClient.Equals(0)) 
-        //    {
-        //        objRespuesta.codError = ErrorType.er_SinCodClient.Id.ToString();
-        //        objRespuesta.descError = ErrorType.er_SinCodClient.Name.ToString();
-        //        return objRespuesta;
-        //    }
-        //    if (value.codBank.Equals(0))
-        //    {
-        //        objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
-        //        objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
-        //        return objRespuesta;
-        //    }
-        //    if (value.codTransaction.Equals(""))
-        //    {
-        //        objRespuesta.codError = ErrorType.er_SinCodTransaction.Id.ToString();
-        //        objRespuesta.descError = ErrorType.er_SinCodTransaction.Name.ToString();
-        //        return objRespuesta;
-        //    }
+            if (value.QRId.Equals(0))
+            {
+                objRespuesta.codError = ErrorType.er_SinidQR.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinidQR.Name.ToString();
+                return objRespuesta;
+            }
+            if (value.codClient.Equals(0))
+            {
+                objRespuesta.codError = ErrorType.er_SinCodClient.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinCodClient.Name.ToString();
+                return objRespuesta;
+            }
+            if (value.codBank.Equals(0))
+            {
+                objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                return objRespuesta;
+            }
+            if (value.codTransaction.Equals(""))
+            {
+                objRespuesta.codError = ErrorType.er_SinCodTransaction.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinCodTransaction.Name.ToString();
+                return objRespuesta;
+            }
 
-        //    try 
-        //    {
-        //        objRespuesta.codError = "0";
-        //        objRespuesta.descError = "";
+            try
+            {
+                objRespuesta.codError = "0";
+                objRespuesta.descError = "";
 
-        //        var IdLog = objNotQR.BuscarNotificationQR(value.QRId, value.codClient.ToString(), value.codBank.ToString(), value.codTransaction);
-               
-        //        //Validar datos con BD middleware cliente y banco
-        //        //ControlLogin objControl = new ControlLogin();
-        //        //objControl = objLogin.GetClienteBanco(value.codClient, value.codBank);
+                //Validar datos con BD middleware cliente y banco
+                ControlLogin objControl = new ControlLogin();
+                objControl = objLogin.GetClienteBanco(value.codClient, value.codBank);
 
-        //        //if (objControl.IdCustomer != 0)
-        //        //{
-        //        //    objRespuesta.QRId = IdLog;
-        //        //    objRespuesta.statusId = 1;
-        //        //    objRespuesta.Gloss = IdLog.
+                if (objControl.ExpirationTime >= DateTime.Now)
+                {
+                    if (objControl.IdCustomer != 0)
+                    {
+                        var Resp = objNotQR.BuscarNotificationQR(value.QRId, value.codClient.ToString(), value.codBank.ToString(), value.codTransaction);
 
-        //        //}
+                        if (Resp is string)
+                        {
+                            objRespuesta.codError = ErrorType.er_SinqrId.Id.ToString();
+                            objRespuesta.descError = ErrorType.er_SinqrId.Name.ToString();
+                        }
+                        else
+                        {
+                            objRespuesta.QRId = Resp.IdQr;
+                            objRespuesta.Gloss = Resp.Gloss;
+                            objRespuesta.statusId = Resp.Status;
+                            objRespuesta.TransactionDateTime = Resp.TransactionDateTime;
+                        }
+                    }
+                    else
+                    {
+                        objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                        objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    }
+                }
+                else
+                {
+                    objRespuesta.codError = ErrorType.er_TokenInvalido.ToString();
+                    objRespuesta.descError = ErrorType.er_TokenInvalido.Name.ToString();
+                }
 
-        //    catch (Exception ex) 
-        //    {
-        //        objRespuesta.codError = ErrorType.er_Inesperado.Id.ToString();  
-        //        objRespuesta.descError = ErrorType.er_Inesperado.Name.ToString() + ex.Message;
-        //    }
-        //}
+            }
+
+            catch (Exception ex)
+            {
+                objRespuesta.codError = ErrorType.er_Inesperado.Id.ToString();
+                objRespuesta.descError = ErrorType.er_Inesperado.Name.ToString() + ex.Message;
+            }
+
+            return objRespuesta;
+        }
+
+        public async Task<RespUserData> GetUserData(string user, string clave)
+        {
+            var objRespuesta = new RespUserData();  
+            var objUserData = new UserDataCrud();
+            
+            //Validaciones 
+            //var objCta = new CtaDesc(dataQR.accountCode);
+            //        dataQR.businessCode = (dataQR.clientNote is null ? "" : dataQR.businessCode.ToString());
+
+            if (user is null)
+            {
+                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                return objRespuesta;
+            }
+
+            if (user.Equals(""))
+            {
+                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                return objRespuesta;
+            }
+            if (clave is null)
+            {
+                objRespuesta.codError = ErrorType.er_SinClave.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinClave.Name.ToString();
+                return objRespuesta;
+            }
+
+            if (clave.Equals(""))
+            {
+                objRespuesta.codError = ErrorType.er_SinClave.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinClave.Name.ToString();
+                return objRespuesta;
+            }
+
+            // Solicitar QR a Servicio de BNB 
+            QREncryptedAdmin objBNB = new QREncryptedAdmin();
+            //objBNB.currency = dataQR.currency;
+            //objBNB.gloss = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
+            //objBNB.amount = dataQR.amount;
+            //objBNB.singleUse = dataQR.singleUse; //true or false
+            //objBNB.expirationDate = dataQR.expirationDate; // "2020-07-30";
+            //objBNB.additionalData = ""; //definir que dato va aqui
+            //objBNB.destinationAccountId = "1"; // 1 is BOB and 2 is USD
+
+            try
+            {
+                objRespuesta.codError = "0";
+                objRespuesta.descError = "";
+
+                var IdLog = objUserData.GetUserData(user, clave);
+
+                if (IdLog.IdCustomer != 0)
+                {                    
+                    objRespuesta.NameUser = IdLog.NameUser;
+                    objRespuesta.IdUser = IdLog.IdUser;
+                    objRespuesta.TypeUser = IdLog.TypeUser;
+                    objRespuesta.IdCustomer = IdLog.IdCustomer;
+                    objRespuesta.Customer = IdLog.Customer;
+                        objRespuesta.IdBank = IdLog.IdBank;
+                        objRespuesta.CodBank = IdLog.CodBank;
+                        objRespuesta.Bank = IdLog.Bank;
+                }
+                else
+                {
+                        objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                        objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                objRespuesta.codError = ErrorType.er_Inesperado.Id.ToString();
+                objRespuesta.descError = ErrorType.er_Inesperado.Name.ToString() + "---" + ex.Message;
+            }
+          
+                return objRespuesta;
+           
+        }
     }
 }

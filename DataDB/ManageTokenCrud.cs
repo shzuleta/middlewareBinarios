@@ -10,8 +10,8 @@
                 using (var context = new BanticfintechContext())
                 {
                     //ManageToken registro = new ManageToken();
-                    //var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0" && p.ExpirationTime >= expirationMinutes.Date ).ToList(); 
-                    var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0").ToList();
+                    var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0" && p.ExpirationTime >= DateTime.Now ).ToList(); 
+                    //var list = context.ManageTokens.Where(p => p.UserName == username && p.Password == password && p.Status == "0").ToList();
 
                     if (list.Count == 1)
                     {
@@ -27,7 +27,6 @@
             {
                 return registro;
                 //return "de where" + ex.Message;
-                //return 0;
             }
         }
     }

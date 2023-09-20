@@ -29,6 +29,8 @@ public partial class BanticfintechContext : DbContext
 
     public virtual DbSet<Notification> Notifications { get; set; }
 
+    public virtual DbSet<UserDatum> UserData { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=banticfintech.database.windows.net;Database=banticfintech;User ID=bfadmin;Password=Password123*;");
@@ -122,6 +124,9 @@ public partial class BanticfintechContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("estadoCustomer");
+            entity.Property(e => e.ExpirationTime)
+                .HasColumnType("date")
+                .HasColumnName("expirationTime");
             entity.Property(e => e.IdBanco).HasColumnName("idBanco");
             entity.Property(e => e.IdCustomer).HasColumnName("idCustomer");
             entity.Property(e => e.IdRelacion).HasColumnName("idRelacion");
@@ -138,6 +143,15 @@ public partial class BanticfintechContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.TipoUsuario)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("tipoUsuario");
+            entity.Property(e => e.UserName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("userName");
             entity.Property(e => e.UsuarioCustomer)
                 .HasMaxLength(10)
                 .IsUnicode(false)
@@ -394,6 +408,40 @@ public partial class BanticfintechContext : DbContext
                 .HasMaxLength(32)
                 .IsUnicode(false)
                 .HasColumnName("voucherId");
+        });
+
+        modelBuilder.Entity<UserDatum>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("UserData");
+
+            entity.Property(e => e.Bank)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("bank");
+            entity.Property(e => e.ClaveUser)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("claveUser");
+            entity.Property(e => e.CodBank)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("codBank");
+            entity.Property(e => e.Customer)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.IdBank).HasColumnName("idBank");
+            entity.Property(e => e.IdCustomer).HasColumnName("idCustomer");
+            entity.Property(e => e.NameUser)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("nameUser");
+            entity.Property(e => e.TypeUser)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("typeUser");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -49,33 +49,26 @@ namespace FBapiService.DataDB
                 using (var dbContext = new BanticfintechContext())
                 {
                     Notification registros1 = new Notification();
-                    var registros = dbContext.Notifications.Where(p => p.IdQr == IdQR && p.Status == "0").ToList();
+                    var registros = dbContext.Notifications.FirstOrDefault(p => p.IdQr == IdQR && p.Status == "0");
 
-                    if (registros.Count == 1)
+                    if (registros != null)
                     {
                         // Actualiza el estado de la notificacion como leida
-                        Notification dataLog = new Notification();
-                        {
-                            dataLog.IdQr = IdQR;
-                            dataLog.Status = "1";
-                        };
-
-                        dbContext.Notifications.Update(dataLog);
+                        registros.Status = "1";
                         dbContext.SaveChanges();
 
-                        registros1 = registros.First();
-
-                        return registros1;
+                        return registros;
                     }
                     else
                     {
-                        return "";
+                        return "IdQr no encontrado";
                     }
                 }
 
             }
             catch (Exception ex) 
             {
+                
                 return ex.Message;
             }
 

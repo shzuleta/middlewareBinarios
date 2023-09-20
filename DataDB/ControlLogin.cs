@@ -36,4 +36,12 @@ public partial class ControlLogin
     public DateTime? CreacionBanco { get; set; }
 
     public int IdRelacion { get; set; }
+
+    public string? UserName { get; set; }
+
+    public DateTime? ExpirationTime { get; set; }
+
+    public string? TipoUsuario { get; set; }
+
+    public int IdUsuario { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using FBapiService.Models.Util;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace FBapiService.DataDB
 {
@@ -17,7 +18,7 @@ namespace FBapiService.DataDB
                     //return registros;
                     if (registros.Count == 1)
                     {
-                        return registros1 = registros.First();
+                            return registros1 = registros.First();
                     }
                     else
                     {

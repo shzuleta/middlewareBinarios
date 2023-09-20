@@ -21,6 +21,8 @@
         public static readonly ErrorType er_SinCodClient = new ErrorType(3002, "No esta habilitado el cliente");
         public static readonly ErrorType er_SinCodigos = new ErrorType(3003, "No esta habilitado el cliente o el banco");
 
-        public static readonly ErrorType er_TokenInvalido = new ErrorType(3010, "Datos Incorrectos");
+        public static readonly ErrorType er_TokenInvalido = new ErrorType(3010, "Datos incorrectos o token vencido");
+        public static readonly ErrorType er_SinUsuario = new ErrorType(3011, "Usuario no encontrado");
+        public static readonly ErrorType er_SinClave = new ErrorType(3012, "Clave no encontrado");
     }
 }
