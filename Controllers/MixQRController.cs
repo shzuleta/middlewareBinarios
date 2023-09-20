@@ -109,6 +109,7 @@ namespace FBapiService.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("getFBUserData")]
         public async Task<RespUserData> getUserData(string username, string password)
         {
