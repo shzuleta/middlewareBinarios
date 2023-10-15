@@ -114,8 +114,6 @@ namespace FBapiService.Controllers
         public async Task<RespUserData> getUserData(UserData value)
         {
             var objSAAS = new ApiBantic();
-            //var identity = Thread.CurrentPrincipal.Identity;
-            //objSAAS.Usuario = User.Identity.Name;// identity.Name;
             var objRespuesta = new RespUserData();
             objRespuesta = await objSAAS.GetUserData(value);
 
