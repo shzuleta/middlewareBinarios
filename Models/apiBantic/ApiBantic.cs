@@ -604,44 +604,48 @@ namespace Models.apiBantic
             return objRespuesta;
         }
 
-        public async Task<RespUserData> GetUserData(string user, string clave)
+        public async Task<RespUserData> GetUserData(UserData value)
         {
             var objRespuesta = new RespUserData();  
             var objUserData = new UserDataCrud();
             
             //Validaciones 
-            //var objCta = new CtaDesc(dataQR.accountCode);
-            //        dataQR.businessCode = (dataQR.clientNote is null ? "" : dataQR.businessCode.ToString());
+            if (value.token == null || value.token == "") 
+            {
+                if (value.user is null)
+                {
+                    objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                    return objRespuesta;
+                }
 
-            if (user is null)
-            {
-                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
-                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
-                return objRespuesta;
-            }
+                if (value.user.Equals(""))
+                {
+                    objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                    return objRespuesta;
+                }
+                if (value.password is null)
+                {
+                    objRespuesta.codError = ErrorType.er_SinClave.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinClave.Name.ToString();
+                    return objRespuesta;
+                }
 
-            if (user.Equals(""))
-            {
-                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
-                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
-                return objRespuesta;
+                if (value.password.Equals(""))
+                {
+                    objRespuesta.codError = ErrorType.er_SinClave.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinClave.Name.ToString();
+                    return objRespuesta;
+                }
             }
-            if (clave is null)
-            {
-                objRespuesta.codError = ErrorType.er_SinClave.Id.ToString();
-                objRespuesta.descError = ErrorType.er_SinClave.Name.ToString();
-                return objRespuesta;
-            }
-
-            if (clave.Equals(""))
-            {
-                objRespuesta.codError = ErrorType.er_SinClave.Id.ToString();
-                objRespuesta.descError = ErrorType.er_SinClave.Name.ToString();
-                return objRespuesta;
+            else 
+            { 
+                
             }
 
             // Solicitar QR a Servicio de BNB 
-            QREncryptedAdmin objBNB = new QREncryptedAdmin();
+            //QREncryptedAdmin objBNB = new QREncryptedAdmin();
             //objBNB.currency = dataQR.currency;
             //objBNB.gloss = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
             //objBNB.amount = dataQR.amount;
@@ -655,15 +659,15 @@ namespace Models.apiBantic
                 objRespuesta.codError = "0";
                 objRespuesta.descError = "";
 
-                var IdLog = objUserData.GetUserData(user, clave);
+                var IdLog = objUserData.GetUserData(value.user, value.password, value.token);
 
                 if (IdLog.IdCustomer != 0)
                 {                    
-                    objRespuesta.NameUser = IdLog.NameUser;
-                    objRespuesta.IdUser = IdLog.IdUser;
-                    objRespuesta.TypeUser = IdLog.TypeUser;
-                    objRespuesta.IdCustomer = IdLog.IdCustomer;
-                    objRespuesta.Customer = IdLog.Customer;
+                        objRespuesta.NameUser = IdLog.NameUser;
+                        objRespuesta.IdUser = IdLog.IdUser;
+                        objRespuesta.TypeUser = IdLog.TypeUser.Trim();
+                        objRespuesta.IdCustomer = IdLog.IdCustomer;
+                        objRespuesta.Customer = IdLog.Customer;
                         objRespuesta.IdBank = IdLog.IdBank;
                         objRespuesta.CodBank = IdLog.CodBank;
                         objRespuesta.Bank = IdLog.Bank;
