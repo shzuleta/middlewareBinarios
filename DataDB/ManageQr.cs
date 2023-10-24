@@ -46,4 +46,6 @@ public partial class ManageQr
     public string? Jsonoutput { get; set; }
 
     public string? TypeRequest { get; set; }
+
+    public string? UserName { get; set; }
 }

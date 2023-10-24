@@ -47,7 +47,7 @@ namespace FBapiService.DataDB
 
         public dynamic RegistrarManageQR(string typeRequest, int Bank, string Currency, string Gloss, decimal Amount, DateTime ExpirationDate,
                           bool SingleUse, string AdditionalData, string Destinationaccountid, string JsonINput, string IdQR, string Success, string MessageOutput,
-                          string JsonOutput, string codTra, int codClient)
+                          string JsonOutput, string codTra, int codClient, string user)
         {
             try
             {
@@ -95,6 +95,7 @@ namespace FBapiService.DataDB
                         dataLog.Message = MessageOutput;
                         dataLog.Jsonoutput = JsonOutput;
                         dataLog.CodTransaction = codTra;
+                        dataLog.UserName = user;
 
                     };
 

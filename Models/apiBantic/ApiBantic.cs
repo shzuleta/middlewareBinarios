@@ -118,6 +118,13 @@ namespace Models.apiBantic
                 return objRespuesta;
             }
 
+            if (dataQR.user.Equals(""))
+            {
+                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                return objRespuesta;
+            }
+
             // Solicitar QR a Servicio de BNB 
             QREncryptedAdmin objBNB = new QREncryptedAdmin();
             //objBNB.currency = dataQR.currency;
@@ -138,14 +145,14 @@ namespace Models.apiBantic
             objBNB.trnQRData.expirationDate = dataQR.expirationDate; // "2020-07-30";
             objBNB.trnQRData.additionalData = ""; //definir que dato va aqui
             objBNB.trnQRData.destinationAccountId = "1"; // 1 is BOB and 2 is USD
-
+        
             try
             {
                 objRespuesta.codError = "0";
                 objRespuesta.descError = "";
 
                 var IdLog = objManageQR.RegistrarManageQR("DATAQR", dataQR.codBank, dataQR.currency, dataQR.clientNote, dataQR.amount, DateTime.Parse(dataQR.expirationDate), dataQR.singleUse,
-                    "", "1", "", null, null, null, null, dataQR.codTransaction, dataQR.codClient);
+                    "", "1", "", null, null, null, null, dataQR.codTransaction, dataQR.codClient, dataQR.user);
 
                 //Validar datos con BD middleware cliente y banco
                 ControlLogin objControl = new ControlLogin();
@@ -245,14 +252,21 @@ namespace Models.apiBantic
                 objRespuesta.descError = " Ingrese el codigo interno";
                 return objRespuesta;
             }
-                                                                                                                                                                                                                                             
+
+            if (value.user.Equals(""))
+            {
+                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                return objRespuesta;
+            }
+
             try                                     
             {                                    
                 objRespuesta.codError = "0";                    
                 objRespuesta.descError = "";                         
 
                 var IdLog = objManageQR.RegistrarManageQR("STATUS", value.codBank, "", "", 0, DateTime.Today, false,
-                    "", "-1", "", null, null, null, null, value.codTransaction, value.codClient);
+                    "", "-1", "", null, null, null, null, value.codTransaction, value.codClient, value.user);
 
                 //Validar datos con BD middleware cliente, banco y IdQR
                 var control = "";
@@ -349,6 +363,13 @@ namespace Models.apiBantic
                 return objRespuesta;
             }
 
+            if (value.user.Equals(""))
+            {
+                objRespuesta.codError = ErrorType.er_SinUsuario.Id.ToString();
+                objRespuesta.descError = ErrorType.er_SinUsuario.Name.ToString();
+                return objRespuesta;
+            }
+
             try
             {
 
@@ -357,7 +378,7 @@ namespace Models.apiBantic
                 objRespuesta.codTransaction = value.codTransaction;
 
                 var IdLog = objManageQR.RegistrarManageQR("CANCEL", value.codBank, "", "", 0, DateTime.Today, false,
-                    "", "-1", "", null, null, null, null, value.codTransaction, value.codClient);
+                    "", "-1", "", null, null, null, null, value.codTransaction, value.codClient, value.user);
 
                 //Validar datos con BD middleware cliente, banco y IdQR
                 var control = "";

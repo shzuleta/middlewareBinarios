@@ -8,6 +8,7 @@ namespace FBapiService.Models.GeneraQR
         public int codClient { get; set; }
         public int codBank { get; set; }
         public string codTransaction { get; set; }
+        public string? user { get; set; }
 
         public QRStatus() 
         {

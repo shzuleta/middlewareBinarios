@@ -306,6 +306,10 @@ public partial class BanticfintechContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("typeRequest");
+            entity.Property(e => e.UserName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("userName");
             entity.Property(e => e.VoucherId)
                 .HasMaxLength(32)
                 .IsUnicode(false)

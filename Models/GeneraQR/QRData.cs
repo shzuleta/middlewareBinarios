@@ -12,5 +12,6 @@
         public string clientNote { get; set; }
         public int codBank { get;set; }
         public string codTransaction { get; set; }
+        public string? user { get; set; }
     }
 }

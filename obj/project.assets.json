@@ -3415,11 +3415,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dell\\Documents\\repositorio\\FBapiService\\FBapiService.csproj",
+      "projectUniqueName": "C:\\Users\\dell\\Documents\\Proyectos\\FBapiService\\FBapiService.csproj",
       "projectName": "FBapiService",
-      "projectPath": "C:\\Users\\dell\\Documents\\repositorio\\FBapiService\\FBapiService.csproj",
+      "projectPath": "C:\\Users\\dell\\Documents\\Proyectos\\FBapiService\\FBapiService.csproj",
       "packagesPath": "C:\\Users\\dell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dell\\Documents\\repositorio\\FBapiService\\obj\\",
+      "outputPath": "C:\\Users\\dell\\Documents\\Proyectos\\FBapiService\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\dell\\AppData\\Roaming\\NuGet\\NuGet.Config",

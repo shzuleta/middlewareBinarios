@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ARtlMoBZFzScLS+8v09YJnCzVAnGjirlH0jSjADUX0o9hAnZ60FgW3VrkQvnKD015d21FqsPyrHTlz4jpwDo/A==",
+  "dgSpecHash": "5Hyb2A3K9t8i8puR8N/m9d7fG4b9kXwtsf+G5mZciPeQPXZk1S6PQ2PJmo04ZKZw57NtJL/d3OwAcqWQ3s/VoQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\dell\\Documents\\repositorio\\FBapiService\\FBapiService.csproj",
+  "projectFilePath": "C:\\Users\\dell\\Documents\\Proyectos\\FBapiService\\FBapiService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dell\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
