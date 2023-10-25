@@ -108,7 +108,7 @@ namespace FBapiService.Controllers
             return rtoken;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         [Route("getFBUserData")]
         public async Task<RespUserData> getUserData(UserData value)
