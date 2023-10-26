@@ -188,7 +188,7 @@ namespace Models.apiBantic
                     objRespuesta.descError = ErrorType.er_TokenInvalido.Name.ToString();
                 }
 
-                objManageQR.ActualizarManageQR(objRespuesta.id, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--" + objRespuesta.descError, null, IdLog, null, "DATAQR");
+                objManageQR.ActualizarManageQR(objRespuesta.id, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--" + objRespuesta.descError, null, IdLog, null, "DATAQR", objRespuesta.qr);
 
                 //objRespuesta.idqr = sQrData.qrID;
                 //objRespuesta.qr = sQrData.encriptedData + "|" + sQrData.bankCertSerial;
@@ -301,7 +301,7 @@ namespace Models.apiBantic
                     }
                 }
                    
-                objManageQR.ActualizarManageQR(objRespuesta.idQR, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--" + objRespuesta.descError, null, IdLog, objRespuesta.statusId.ToString(), "STATUS");
+                objManageQR.ActualizarManageQR(objRespuesta.idQR, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--" + objRespuesta.descError, null, IdLog, objRespuesta.statusId.ToString(), "STATUS", "");
 
 
                 //objRespuesta.idqr = sQrData.qrID;
@@ -408,7 +408,7 @@ namespace Models.apiBantic
                     }
                 }
 
-                objManageQR.ActualizarManageQR(objRespuesta.id, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--"+ objRespuesta.descError, "", IdLog, null, "CANCEL");
+                objManageQR.ActualizarManageQR(objRespuesta.id, objRespuesta.success, objRespuesta.message + "--" + objRespuesta.codError + "--"+ objRespuesta.descError, "", IdLog, null, "CANCEL", "");
 
 
                 //objRespuesta.qr = sQrData.encriptedData + "|" + sQrData.bankCertSerial;

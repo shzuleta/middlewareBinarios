@@ -246,6 +246,9 @@ public partial class BanticfintechContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("codTransaction");
+            entity.Property(e => e.CodigoQr)
+                .IsUnicode(false)
+                .HasColumnName("codigoQR");
             entity.Property(e => e.Currency)
                 .HasMaxLength(3)
                 .IsUnicode(false)

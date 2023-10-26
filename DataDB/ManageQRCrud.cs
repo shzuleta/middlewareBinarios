@@ -7,7 +7,7 @@ namespace FBapiService.DataDB
     public class ManageQRCrud
     {
         public dynamic ActualizarManageQR(string IdQR, bool Success, string MessageOutput,
-                   string JsonOutput, int idLOG, string status, string typeRequest)
+                   string JsonOutput, int idLOG, string status, string typeRequest, string codigoQR)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace FBapiService.DataDB
                         {
                             LogToUpdate.Status = status;
                         }
-
+                        LogToUpdate.CodigoQr = codigoQR;
                     }
 
                     dbContext.SaveChanges();

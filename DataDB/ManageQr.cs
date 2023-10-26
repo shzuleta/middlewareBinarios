@@ -48,4 +48,6 @@ public partial class ManageQr
     public string? TypeRequest { get; set; }
 
     public string? UserName { get; set; }
+
+    public string? CodigoQr { get; set; }
 }
