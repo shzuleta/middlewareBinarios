@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using FBapiService.Constant;
 using FBapiService.DataDB;
 using Newtonsoft.Json.Linq;
+using FBapiService.Security;
 
 namespace FBapiService.Controllers
 {
@@ -277,6 +278,20 @@ namespace FBapiService.Controllers
             //objSAAS.Usuario = identity.Name;
             var objRespuesta = new RespGetQRNotificaction();
             objRespuesta = objSAAS.GetQRNotificaction(value);
+
+            return objRespuesta;
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "BasicAuthentication")]
+        [Route("ReceiveNotification")]
+        public async Task<RespQRNotification> ReceiveNotificationBNB(QRNotification value)
+        {
+            var objSAAS = new ApiBantic();
+            //var identity = Thread.CurrentPrincipal.Identity;
+            //objSAAS.Usuario = identity.Name;
+            var objRespuesta = new RespQRNotification();
+            objRespuesta = objSAAS.QRNotification(value, "BNB");
 
             return objRespuesta;
         }

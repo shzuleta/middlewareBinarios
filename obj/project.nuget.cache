@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "5Hyb2A3K9t8i8puR8N/m9d7fG4b9kXwtsf+G5mZciPeQPXZk1S6PQ2PJmo04ZKZw57NtJL/d3OwAcqWQ3s/VoQ==",
+  "dgSpecHash": "2qrkH9LQzryushcMgnxvR/7LeWOJZ80b0C7OXxfEjpae4xM0qKFLIADSIkRgpy70Vzl0QyTWozWNEL4aiyv0yg==",
   "success": true,
   "projectFilePath": "C:\\Users\\dell\\Documents\\Proyectos\\FBapiService\\FBapiService.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\dell\\.nuget\\packages\\aspnetcore.authentication.apikey\\7.0.0\\aspnetcore.authentication.apikey.7.0.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

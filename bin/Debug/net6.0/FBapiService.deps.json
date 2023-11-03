@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "FBapiService/1.0.0": {
         "dependencies": {
+          "AspNetCore.Authentication.ApiKey": "7.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.20",
           "Microsoft.Data.SqlClient": "5.1.1",
           "Microsoft.EntityFrameworkCore": "7.0.9",
@@ -19,6 +20,14 @@
         },
         "runtime": {
           "FBapiService.dll": {}
+        }
+      },
+      "AspNetCore.Authentication.ApiKey/7.0.0": {
+        "runtime": {
+          "lib/net6.0/AspNetCore.Authentication.ApiKey.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.0.0"
+          }
         }
       },
       "Azure.Core/1.25.0": {
@@ -717,6 +726,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AspNetCore.Authentication.ApiKey/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cGJpMLbK1wbxhZMDpwJLBg9PaILPQxzDf5vHPHrSSrSA2WKV8ZEphWPxqXD9bBdzQP7IW86bi8k3eOAVLvLZXA==",
+      "path": "aspnetcore.authentication.apikey/7.0.0",
+      "hashPath": "aspnetcore.authentication.apikey.7.0.0.nupkg.sha512"
     },
     "Azure.Core/1.25.0": {
       "type": "package",

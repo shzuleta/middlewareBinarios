@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "AspNetCore.Authentication.ApiKey/7.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/AspNetCore.Authentication.ApiKey.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/AspNetCore.Authentication.ApiKey.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Azure.Core/1.25.0": {
         "type": "package",
         "dependencies": {
@@ -1184,6 +1200,40 @@
     }
   },
   "libraries": {
+    "AspNetCore.Authentication.ApiKey/7.0.0": {
+      "sha512": "cGJpMLbK1wbxhZMDpwJLBg9PaILPQxzDf5vHPHrSSrSA2WKV8ZEphWPxqXD9bBdzQP7IW86bi8k3eOAVLvLZXA==",
+      "type": "package",
+      "path": "aspnetcore.authentication.apikey/7.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "aspnetcore.authentication.apikey.7.0.0.nupkg.sha512",
+        "aspnetcore.authentication.apikey.nuspec",
+        "lib/net461/AspNetCore.Authentication.ApiKey.dll",
+        "lib/net461/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/net461/AspNetCore.Authentication.ApiKey.xml",
+        "lib/net5.0/AspNetCore.Authentication.ApiKey.dll",
+        "lib/net5.0/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/net5.0/AspNetCore.Authentication.ApiKey.xml",
+        "lib/net6.0/AspNetCore.Authentication.ApiKey.dll",
+        "lib/net6.0/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/net6.0/AspNetCore.Authentication.ApiKey.xml",
+        "lib/net7.0/AspNetCore.Authentication.ApiKey.dll",
+        "lib/net7.0/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/net7.0/AspNetCore.Authentication.ApiKey.xml",
+        "lib/netcoreapp3.0/AspNetCore.Authentication.ApiKey.dll",
+        "lib/netcoreapp3.0/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/netcoreapp3.0/AspNetCore.Authentication.ApiKey.xml",
+        "lib/netcoreapp3.1/AspNetCore.Authentication.ApiKey.dll",
+        "lib/netcoreapp3.1/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/netcoreapp3.1/AspNetCore.Authentication.ApiKey.xml",
+        "lib/netstandard2.0/AspNetCore.Authentication.ApiKey.dll",
+        "lib/netstandard2.0/AspNetCore.Authentication.ApiKey.pdb",
+        "lib/netstandard2.0/AspNetCore.Authentication.ApiKey.xml"
+      ]
+    },
     "Azure.Core/1.25.0": {
       "sha512": "X8Dd4sAggS84KScWIjEbFAdt2U1KDolQopTPoHVubG2y3CM54f9l6asVrP5Uy384NWXjsspPYaJgz5xHc+KvTA==",
       "type": "package",
@@ -3399,6 +3449,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "AspNetCore.Authentication.ApiKey >= 7.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.20",
       "Microsoft.Data.SqlClient >= 5.1.1",
       "Microsoft.EntityFrameworkCore >= 7.0.9",
@@ -3449,6 +3500,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "AspNetCore.Authentication.ApiKey": {
+            "target": "Package",
+            "version": "[7.0.0, )"
+          },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
             "version": "[6.0.20, )"

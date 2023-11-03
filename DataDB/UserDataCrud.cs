@@ -91,5 +91,46 @@ namespace FBapiService.DataDB
                 //return 0;
             }
         }
+
+        public dynamic GetUserBasic(string user, string clave)
+        {
+            try
+            {
+                //string userToken = "";
+                //string claveToken = "";
+                //DateTime Fecha = DateTime.Now;
+                using (var context = new BanticfintechContext())
+                {
+                    if (user != "" && clave != "")
+                    {
+                        UserDatum registros1 = new UserDatum();
+                        var registros = context.UserData.Where(p => p.NameUser == user && p.ClaveUser == clave).ToList();
+                        if (registros.Count == 1)
+                        {
+                            registros1 = registros.First();
+                            //aqui se puede validar la fecha del token, cambiar el output de UserData 
+
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else 
+                    {
+                        return false;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+                //return ex.Message;
+                //return 0;
+            }
+
+        }
     }
 }

@@ -176,3 +176,4 @@ C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\refint\FBapiServ
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.pdb
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.genruntimeconfig.cache
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\ref\FBapiService.dll
+C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\AspNetCore.Authentication.ApiKey.dll
