@@ -24,5 +24,7 @@
         public static readonly ErrorType er_TokenInvalido = new ErrorType(3010, "Datos incorrectos o token vencido");
         public static readonly ErrorType er_SinUsuario = new ErrorType(3011, "Usuario no encontrado");
         public static readonly ErrorType er_SinClave = new ErrorType(3012, "Clave no encontrado");
+
+        public static readonly ErrorType er_SinClientBank = new ErrorType(3012, "No tiene codigo de cliente para retornar bancos");
     }
 }

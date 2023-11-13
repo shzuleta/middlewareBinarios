@@ -11,6 +11,7 @@ using FBapiService.Constant;
 using FBapiService.DataDB;
 using Newtonsoft.Json.Linq;
 using FBapiService.Security;
+using Models.GeneraQRBEC;
 
 namespace FBapiService.Controllers
 {
@@ -28,7 +29,7 @@ namespace FBapiService.Controllers
 
         [HttpPost]
         [Route("getFBToken")]
-        public RespUserToken getFBTokenn(UserToken value) 
+        public RespUserToken getFBTokenn(UserToken value)
         {
             RespUserToken rtoken = new RespUserToken();
             rtoken.codError = "0";
@@ -82,10 +83,10 @@ namespace FBapiService.Controllers
 
             // Generar el token
             ManageToken TOK = new ManageToken();
-            try 
+            try
             {
                 ManageTokenCrud objtoken = new ManageTokenCrud();
-               
+
                 TOK = objtoken.GetUserToken(value.username.ToLower(), value.password.ToLower());
 
                 if (TOK.UserName == null)
@@ -101,7 +102,7 @@ namespace FBapiService.Controllers
             catch (Exception e)
             {
                 rtoken.codError = ErrorType.er_Inesperado.Id.ToString();
-                rtoken.descError =  e.Message;
+                rtoken.descError = e.Message;
             }
 
             rtoken.token = Token;
@@ -123,60 +124,60 @@ namespace FBapiService.Controllers
         }
 
         [HttpPost]
-        [Authorize] 
+        [Authorize]
         [Route("getQRImage")]
-        public async Task<respQRData> getQRWithImage(QRData value)
+        public async Task<RespQRData> getQRWithImage(QRData value)
         {
             var objSAAS = new ApiBantic();
             //var identity = Thread.CurrentPrincipal.Identity;
             //objSAAS.Usuario = User.Identity.Name;// identity.Name;
-            var objRespuesta = new respQRData();
+            var objRespuesta = new RespQRData();
             objRespuesta = await objSAAS.GetQrData(value);
 
-            if (objRespuesta.success.Equals("0"))
-            {
-                //var barcodedemo = new BarcodeWriter();
-                //var encodignOption = new EncodingOptions() { Width = 354, Height = 354, Margin = 1, PureBarcode = false };
-                //encodignOption.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
-                //barcodedemo.Renderer = new BitmapRenderer(); // BitmapRenderer();
-                //barcodedemo.Options = encodignOption;
-                //barcodedemo.Format = BarcodeFormat.QR_CODE;
-                //Bitmap bitmap = barcodedemo.Write(objRespuesta.qr);
+            //if (objRespuesta.success.Equals("0"))
+            //{
+            //    //var barcodedemo = new BarcodeWriter();
+            //    //var encodignOption = new EncodingOptions() { Width = 354, Height = 354, Margin = 1, PureBarcode = false };
+            //    //encodignOption.Hints.Add(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+            //    //barcodedemo.Renderer = new BitmapRenderer(); // BitmapRenderer();
+            //    //barcodedemo.Options = encodignOption;
+            //    //barcodedemo.Format = BarcodeFormat.QR_CODE;
+            //    //Bitmap bitmap = barcodedemo.Write(objRespuesta.qr);
 
-                //var context = new Acceso(_httpContextAccessor);
+            //    //var context = new Acceso(_httpContextAccessor);
 
-                //string fileSpec = context.MiMetodo();
-
-
-
-                ////string fileSpec = System.Web.HttpContext.Current.Server.MapPath("~/Images/simple6.png");
-
-                //var logo = new Bitmap(fileSpec);
-                //var g = Graphics.FromImage(bitmap);
+            //    //string fileSpec = context.MiMetodo();
 
 
-                //g.DrawImage(logo, new Point((bitmap.Width - logo.Width) / 2, (bitmap.Height - logo.Height) / 2));
 
-                ///*RectangleF rectf = new RectangleF(45, 320, 0, 50);
-                //g.SmoothingMode = SmoothingMode.AntiAlias;
-                //g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                //g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                //g.DrawString("Venc:", new Font("Arial", 9), Brushes.Black, rectf);
-                //g.Flush(); */
+            //    ////string fileSpec = System.Web.HttpContext.Current.Server.MapPath("~/Images/simple6.png");
+
+            //    //var logo = new Bitmap(fileSpec);
+            //    //var g = Graphics.FromImage(bitmap);
 
 
-                //using (var ms = new MemoryStream())
-                //{
-                //    using (var bitmap1 = new Bitmap(bitmap))
-                //    {
-                //        bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                //        var SigBase64 = Convert.ToBase64String(ms.GetBuffer());
-                //        objRespuesta.qr = SigBase64;
-                //    }
-                //}
+            //    //g.DrawImage(logo, new Point((bitmap.Width - logo.Width) / 2, (bitmap.Height - logo.Height) / 2));
+
+            //    ///*RectangleF rectf = new RectangleF(45, 320, 0, 50);
+            //    //g.SmoothingMode = SmoothingMode.AntiAlias;
+            //    //g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            //    //g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            //    //g.DrawString("Venc:", new Font("Arial", 9), Brushes.Black, rectf);
+            //    //g.Flush(); */
 
 
-            }
+            //    //using (var ms = new MemoryStream())
+            //    //{
+            //    //    using (var bitmap1 = new Bitmap(bitmap))
+            //    //    {
+            //    //        bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            //    //        var SigBase64 = Convert.ToBase64String(ms.GetBuffer());
+            //    //        objRespuesta.qr = SigBase64;
+            //    //    }
+            //    //}
+
+
+            //}
 
             return objRespuesta;
         }
@@ -250,14 +251,14 @@ namespace FBapiService.Controllers
             //objSAAS.Usuario = identity.Name;
             var objRespuesta = new RespQRCancel();
             objRespuesta = await objSAAS.SetQRCancel(value);
-                                                                                  
+
             return objRespuesta;
         }
 
         [HttpPost]
         [Authorize]
         [Route("ReceiveNotificationBNB")]
-        public async Task<RespQRNotification> ReceiveNotification(QRNotification value) 
+        public async Task<RespQRNotification> ReceiveNotification(QRNotification value)
         {
             var objSAAS = new ApiBantic();
             //var identity = Thread.CurrentPrincipal.Identity;
@@ -282,6 +283,7 @@ namespace FBapiService.Controllers
             return objRespuesta;
         }
 
+//**************Servicios para BNB***********************
         [HttpPost]
         [Authorize(AuthenticationSchemes = "BasicAuthentication")]
         [Route("ReceiveNotification")]
@@ -295,5 +297,10 @@ namespace FBapiService.Controllers
 
             return objRespuesta;
         }
-    }                                             
+
+ //*************Servicios para BEC***********************
+        
+
+    }      
+    
 }

@@ -13,13 +13,20 @@
         public int IdCustomer { get; set; }
 
         public string? Customer { get; set; }
-
-        public int IdBank { get; set; }
-
-        public string? CodBank { get; set; }
-
-        public string? Bank { get; set; }
+        public List<IDBanks> banks { get; set; }
         public string? codError { get; set; }
         public string? descError { get; set; }
+
+        public RespUserData()
+        {
+            banks = new List<IDBanks>();
+        }
+    }
+
+    public class IDBanks
+    {
+        public int idBank { get; set; }
+        public string? CodBank { get; set; }
+        public string bank { get; set; }
     }
 }

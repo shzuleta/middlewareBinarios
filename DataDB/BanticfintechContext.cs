@@ -17,6 +17,8 @@ public partial class BanticfintechContext : DbContext
 
     public virtual DbSet<Bank> Banks { get; set; }
 
+    public virtual DbSet<BankDatum> BankData { get; set; }
+
     public virtual DbSet<ControlLogin> ControlLogins { get; set; }
 
     public virtual DbSet<CustomerBank> CustomerBanks { get; set; }
@@ -80,6 +82,25 @@ public partial class BanticfintechContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("type");
+        });
+
+        modelBuilder.Entity<BankDatum>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("BankData");
+
+            entity.Property(e => e.Bank)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("bank");
+            entity.Property(e => e.Cliente).HasColumnName("cliente");
+            entity.Property(e => e.CodBank)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("codBank");
+            entity.Property(e => e.Codigo).HasColumnName("codigo");
+            entity.Property(e => e.IdBank).HasColumnName("idBank");
         });
 
         modelBuilder.Entity<ControlLogin>(entity =>
@@ -423,22 +444,13 @@ public partial class BanticfintechContext : DbContext
                 .HasNoKey()
                 .ToView("UserData");
 
-            entity.Property(e => e.Bank)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("bank");
             entity.Property(e => e.ClaveUser)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("claveUser");
-            entity.Property(e => e.CodBank)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("codBank");
             entity.Property(e => e.Customer)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.IdBank).HasColumnName("idBank");
             entity.Property(e => e.IdCustomer).HasColumnName("idCustomer");
             entity.Property(e => e.NameUser)
                 .HasMaxLength(50)

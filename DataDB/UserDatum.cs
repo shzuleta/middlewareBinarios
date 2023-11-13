@@ -16,10 +16,4 @@ public partial class UserDatum
     public int IdCustomer { get; set; }
 
     public string? Customer { get; set; }
-
-    public int IdBank { get; set; }
-
-    public string? CodBank { get; set; }
-
-    public string? Bank { get; set; }
 }

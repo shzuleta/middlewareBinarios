@@ -5,7 +5,7 @@ namespace Models.QrBNB
 {
     public interface IQrBNB
     {
-        Task<respQRData> ObtenerQRData(QREncryptedAdmin idQR, string token);
+        Task<RespQRData> ObtenerQRData(QREncryptedAdmin idQR, string token);
     }
 
     public interface ITokenBNB

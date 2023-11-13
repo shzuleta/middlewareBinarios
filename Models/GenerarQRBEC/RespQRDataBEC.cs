@@ -1,11 +1,11 @@
-﻿namespace Models.GeneraQR
+﻿namespace Models.GeneraQRBEC
 {
-    public class RespQRData
+    public class RespQRDataBEC
     {
-        public string? id { get; set; }
-        public string? qr { get; set; }
+        public string? qrId { get; set; }
+        public string? qrImage { get; set; }
         public string? codTransaction { get; set; }
-        public bool success { get; set; }
+        public string responseCode { get; set; }
         public string? message { get; set; }
         public string? codError { get; set; } 
         public string? descError { get; set; }

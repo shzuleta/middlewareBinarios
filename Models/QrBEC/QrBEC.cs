@@ -1,5 +1,4 @@
-﻿using Models.GeneraQR;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
@@ -15,17 +14,22 @@ using Models.logIng;
 using FBapiService.Models.Util;
 using FBapiService.DataDB;
 using Microsoft.EntityFrameworkCore;
-using FBapiService.Models.GeneraQR;
-using Newtonsoft.Json.Linq;
 using Models.GeneraQR;
+using Newtonsoft.Json.Linq;
+using FBapiService.Models.GeneraQR;
+using Models.QrBEC;
+using Models.GeneraQRBEC;
+using FBapiService.Models.GeneraQRBEC;
+using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
-namespace Models.QrBNB
+namespace Models.QrBEC
 {
-    public class QrBNB : IQrBNB, ITokenBNB, IDisposable
+    public class QrBEC : IQrBEC, ITokenBEC, IDisposable
     {
         private bool _disposed = false;
 
-        ~QrBNB() => Dispose(false);
+        ~QrBEC() => Dispose(false);
         // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
@@ -50,7 +54,7 @@ namespace Models.QrBNB
             GC.SuppressFinalize(this);
         }
 
-        public async Task<RespQRData> ObtenerQRData(QREncryptedAdmin idQRMotor, string token)
+        public async Task<RespQRDataBEC> ObtenerQRData(QREncryptedAdminBEC idQRMotor, string token)
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -60,7 +64,7 @@ namespace Models.QrBNB
             .AddJsonFile("archivodos.json", optional: true, reloadOnChange: true);
             IConfiguration configuration = builder.Build();
 
-            string url = configuration["URL_BNB_QR"];
+            string url = configuration["URL_BEC_QR"];
 
             using (HttpClient client = new HttpClient())
             {
@@ -75,7 +79,7 @@ namespace Models.QrBNB
                 objRespuesta = new StringContent(obSeriaJson, Encoding.UTF8, "application/json");
                 HttpResponseMessage result = null;
 
-                RespQRData objResobj = new RespQRData();
+                RespQRDataBEC objResobj = new RespQRDataBEC();
                 objResobj.codError = "0";
                 objResobj.descError = "";
 
@@ -98,7 +102,7 @@ namespace Models.QrBNB
                     //throw new Exception("No se conecto con el servidor QRDATA " + result.StatusCode.ToString());
                 }
                 string Resultado = await result.Content.ReadAsStringAsync();
-                objResobj = JsonConvert.DeserializeObject<RespQRData>(Resultado);
+                objResobj = JsonConvert.DeserializeObject<RespQRDataBEC>(Resultado);
                 //respQREncryptedAdmin objResMidobj = JsonConvert.DeserializeObject<respQREncryptedAdmin>(Resultado);
                 if (result.StatusCode.ToString().Equals("OK"))
                 {
@@ -119,7 +123,7 @@ namespace Models.QrBNB
             }
         }
 
-        public async Task<respTokenBNB?> ObtenerTokenBNB()
+        public async Task<respTokenBEC?> ObtenerTokenBEC()
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -129,11 +133,11 @@ namespace Models.QrBNB
             .AddJsonFile("archivodos.json", optional: true, reloadOnChange: true);
             IConfiguration configuration = builder.Build();
 
-            TokenBNB inputToken = new TokenBNB();
+            TokenBEC inputToken = new TokenBEC();
 
-            inputToken.accountID = configuration["ACCOUNTID_BNB"];
-            inputToken.authorizationID = configuration["AUTHORIZATIONID_BNB"];
-            string url = configuration["URL_BNB"];
+            inputToken.username = configuration["USERNAME_BEC"];
+            inputToken.password = configuration["PASSWORD_BEC"];
+            string url = configuration["URL_BEC"];
 
             using (HttpClient client = new HttpClient())
             {
@@ -163,7 +167,7 @@ namespace Models.QrBNB
                     throw new Exception("No se conecto con el servidor del Banco " + result.StatusCode.ToString());
                 }
                 string Resultado = await result.Content.ReadAsStringAsync();
-                respTokenBNB objResobj = JsonConvert.DeserializeObject<respTokenBNB>(Resultado);
+                respTokenBEC objResobj = JsonConvert.DeserializeObject<respTokenBEC>(Resultado);
                 //respQREncryptedAdmin objResobj = JsonConvert.DeserializeObject<respQREncryptedAdmin>(Resultado);
                 client.Dispose();
                 objRespuesta.Dispose();
@@ -172,7 +176,7 @@ namespace Models.QrBNB
             }
         }
 
-        public async Task<RespQRStatus> ObtenerQREstado(QRStatus value, string token) 
+        public async Task<RespQRStatusBEC> ObtenerQREstado(QRStatusBEC value, string token)
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -182,60 +186,61 @@ namespace Models.QrBNB
             .AddJsonFile("archivodos.json", optional: true, reloadOnChange: true);
             IConfiguration configuration = builder.Build();
 
-            string url = configuration["URL_BNB_IDQR"];
+            string url = configuration["URL_BEC_STATUSQR"];
 
             using (HttpClient client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(5);
-                HttpContent objRespuesta;
+                //HttpContent objRespuesta;
+                //HttpCompletionOption objRespuesta;
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 string obSeriaJson = JsonConvert.SerializeObject(value.idQRStat);
-                objRespuesta = new StringContent(obSeriaJson, Encoding.UTF8, "application/json");
+                //objRespuesta = new StringContent(obSeriaJson, Encoding.UTF8, "application/json");
                 HttpResponseMessage result = null;
 
-                RespQRStatus objRes = new RespQRStatus();
-                objRes.codError = "0";
+                RespQRStatusBEC objRes = new RespQRStatusBEC();
+                objRes.responseCode = "0";
                 objRes.descError = "";
 
                 try
                 {
-                    result = await client.PostAsync(url, objRespuesta);
-
+                    result = await client.GetAsync(url + "?qrId=" + value.idQRStat.qrId);
                 }
                 catch (Exception e)
                 {
-                    objRes.codError = ErrorType.er_Inesperado.Id.ToString();
+                    objRes.responseCode = ErrorType.er_Inesperado.Id.ToString();
                     objRes.descError = e.Message;
-                    //var obj = e.Message;
                 }
 
                 if (!result.IsSuccessStatusCode)
                 {
-                    objRes.codError = ErrorType.er_Inesperado.Id.ToString();
+                    objRes.responseCode = ErrorType.er_Inesperado.Id.ToString();
                     objRes.descError = "Error en el input json";
                     //throw new Exception("No se conecto con el servidor QRDATA " + result.StatusCode.ToString());
                 }
                 string Resultado = await result.Content.ReadAsStringAsync();
-                objRes = JsonConvert.DeserializeObject<RespQRStatus>(Resultado);
-                //respQREncryptedAdmin objResMidobj = JsonConvert.DeserializeObject<respQREncryptedAdmin>(Resultado);
+                objRes = JsonConvert.DeserializeObject<RespQRStatusBEC>(Resultado);
+
                 if (result.StatusCode.ToString().Equals("OK"))
                 {
-                    objRes.codError = "0";
+                    objRes.responseCode = "0";
                 }
                 else
                 {
-                    objRes.codError = ErrorType.er_Inesperado.Id.ToString();
+                    objRes.responseCode = ErrorType.er_Inesperado.Id.ToString();
                 }
-                objRes.descError = result.StatusCode.ToString();
+                //objRes.descError = (objRes.descError.Equals(null)) ? "" : objRes.descError;
+                if (objRes.descError == null)
+                {
+                    objRes.descError = "";
+                }
 
                 client.Dispose();
-                objRespuesta.Dispose();
                 result.Dispose();
-
 
                 return objRes;
             }
@@ -259,14 +264,14 @@ namespace Models.QrBNB
                 client.Timeout = TimeSpan.FromMinutes(5);
                 HttpContent objRespuesta;
                 client.BaseAddress = new Uri(url);
-                client.DefaultRequestHeaders.Accept.Clear();                                                                                                                                                                                                                                
+                client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);                    
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 string obSeriaJson = JsonConvert.SerializeObject(value.idQRCancel);
                 objRespuesta = new StringContent(obSeriaJson, Encoding.UTF8, "application/json");
                 HttpResponseMessage result = null;
-                                                         
+
                 RespQRCancel objRes = new RespQRCancel();
                 objRes.codError = "0";
                 objRes.descError = "";
@@ -291,11 +296,11 @@ namespace Models.QrBNB
                 }
                 string Resultado = await result.Content.ReadAsStringAsync();
                 objRes = JsonConvert.DeserializeObject<RespQRCancel>(Resultado);
-                if(result.StatusCode.ToString().Equals("OK"))
+                if (result.StatusCode.ToString().Equals("OK"))
                 {
                     objRes.codError = "0";
                 }
-                else 
+                else
                 {
                     objRes.codError = ErrorType.er_Inesperado.Id.ToString();
                 }

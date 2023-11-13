@@ -55,7 +55,7 @@ namespace FBapiService.DataDB
                     {
                         UserDatum registros1 = new UserDatum();
                         var registros = context.UserData.Where(p => p.NameUser == userToken && p.ClaveUser == claveToken).ToList();
-                        if (registros.Count == 1)
+                        if (registros.Count >= 1)
                         {
                             registros1 = registros.First();
                             //aqui se puede validar la fecha del token, cambiar el output de UserData 
@@ -71,7 +71,7 @@ namespace FBapiService.DataDB
                     {
                         UserDatum registros1 = new UserDatum();
                         var registros = context.UserData.Where(p => p.NameUser == user && p.ClaveUser == clave).ToList();
-                        if (registros.Count == 1)
+                        if (registros.Count >= 1)
                         {
                             return registros1 = registros.First();
                         }
@@ -127,8 +127,6 @@ namespace FBapiService.DataDB
             catch (Exception ex)
             {
                 throw (ex);
-                //return ex.Message;
-                //return 0;
             }
 
         }

@@ -1,7 +1,7 @@
 ﻿using FBapiService.Common;
 using Models.GeneraQR;
 using FBapiService.Models.Util;
-using Models.QrBNB;
+using Models.QrBEC;
 using Microsoft.AspNetCore.Components;
 using System.Data;
 using System;
@@ -17,6 +17,11 @@ using Models.logIng;
 using FBapiService.Models.GeneraQR;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Models.QrBNB;
+using Models.GeneraQRBEC;
+using System.Net.NetworkInformation;
+using FBapiService.Models.GeneraQRBEC;
 
 namespace Models.apiBantic
 {
@@ -25,10 +30,11 @@ namespace Models.apiBantic
     {
         public string Usuario { get; set; }
 
-        public async Task<respQRData> GetQrData(QRData dataQR)
+        public async Task<RespQRData> GetQrData(QRData dataQR)
         {
             var objQrBNB = new QrBNB.QrBNB();
-            var objRespuesta = new respQRData();
+            var objQrBEC = new QrBEC.QrBEC();
+            var objRespuesta = new RespQRData();
             var objManageQR = new ManageQRCrud();
             var objLogin = new ControlLoginCrud();
             //Validaciones 
@@ -125,34 +131,60 @@ namespace Models.apiBantic
                 return objRespuesta;
             }
 
-            // Solicitar QR a Servicio de BNB 
             QREncryptedAdmin objBNB = new QREncryptedAdmin();
-            //objBNB.currency = dataQR.currency;
-            //objBNB.gloss = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
-            //objBNB.amount = dataQR.amount;
-            //objBNB.singleUse = dataQR.singleUse; //true or false
-            //objBNB.expirationDate = dataQR.expirationDate; // "2020-07-30";
-            //objBNB.additionalData = ""; //definir que dato va aqui
-            //objBNB.destinationAccountId = "1"; // 1 is BOB and 2 is USD
+            QREncryptedAdminBEC objBEC = new QREncryptedAdminBEC();
 
-            objBNB.codTransaction = dataQR.codTransaction;
-            objBNB.codBank = dataQR.codBank;
+            RespQRData sQrDataBNB = new RespQRData();
+            RespQRDataBEC sQrDataBEC = new RespQRDataBEC();
+            switch (dataQR.codBank)
+            {
+                case 1:
+                    //input de BNB
+                    objBNB.codTransaction = dataQR.codTransaction;
+                    objBNB.codBank = dataQR.codBank;
 
-            objBNB.trnQRData.currency = dataQR.currency;
-            objBNB.trnQRData.gloss = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
-            objBNB.trnQRData.amount = dataQR.amount;
-            objBNB.trnQRData.singleUse = dataQR.singleUse; //true or false
-            objBNB.trnQRData.expirationDate = dataQR.expirationDate; // "2020-07-30";
-            objBNB.trnQRData.additionalData = ""; //definir que dato va aqui
-            objBNB.trnQRData.destinationAccountId = "1"; // 1 is BOB and 2 is USD
-        
+                    objBNB.trnQRData.currency = dataQR.currency;
+                    objBNB.trnQRData.gloss = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
+                    objBNB.trnQRData.amount = dataQR.amount;
+                    objBNB.trnQRData.singleUse = dataQR.singleUse; //true or false
+                    objBNB.trnQRData.expirationDate = dataQR.expirationDate; // "2020-07-30";
+                    objBNB.trnQRData.additionalData = ""; //definir que dato va aqui
+                    objBNB.trnQRData.destinationAccountId = "1"; // 1 is BOB and 2 is USD
+                    break;
+
+                case 2:
+                    //input de BEC
+
+                    objBEC.codTransaction = dataQR.codTransaction;
+                    objBEC.codBank = dataQR.codBank;
+
+                    objBEC.trnQRData.transactionId = dataQR.codTransaction;
+                    objBEC.trnQRData.currency = dataQR.currency;
+                    objBEC.trnQRData.description = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
+                    objBEC.trnQRData.amount = dataQR.amount;
+                    objBEC.trnQRData.singleUse = dataQR.singleUse; //true or false
+                    objBEC.trnQRData.dueDate = dataQR.expirationDate; // "2020-07-30";
+                    objBEC.trnQRData.modifyAmount = false; //definir si puede modificar el monto //true or false
+                    objBEC.trnQRData.accountCredit = dataQR.accountCode; // cuenta en la que se recibira el cobro
+                    break;
+
+                case 3:
+                    Console.WriteLine("Seleccionaste la opción 3.");
+                    break;
+
+                default:
+                    objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    break;
+            }
+       
             try
             {
                 objRespuesta.codError = "0";
                 objRespuesta.descError = "";
 
                 var IdLog = objManageQR.RegistrarManageQR("DATAQR", dataQR.codBank, dataQR.currency, dataQR.clientNote, dataQR.amount, DateTime.Parse(dataQR.expirationDate), dataQR.singleUse,
-                    "", "1", "", null, null, null, null, dataQR.codTransaction, dataQR.codClient, dataQR.user);
+                    "", dataQR.accountCode, "", null, null, null, null, dataQR.codTransaction, dataQR.codClient, dataQR.user);
 
                 //Validar datos con BD middleware cliente y banco
                 ControlLogin objControl = new ControlLogin();
@@ -162,18 +194,52 @@ namespace Models.apiBantic
                 {
                     if (objControl.IdCustomer != 0)
                     {
-                        //servicios de BNB
-                        respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
+                        switch (dataQR.codBank)
+                        {
+                            case 1:
+                                //servicios de BNB
+                                respTokenBNB tokenBNB = await objQrBNB.ObtenerTokenBNB();
 
-                        respQRData sQrData = await objQrBNB.ObtenerQRData(objBNB, token.message);
+                                sQrDataBNB = await objQrBNB.ObtenerQRData(objBNB, tokenBNB.message);
 
-                        objRespuesta.id = sQrData.id;
-                        objRespuesta.qr = sQrData.qr;
-                        objRespuesta.codTransaction = dataQR.codTransaction;
-                        objRespuesta.success = sQrData.success;
-                        objRespuesta.message = sQrData.message;
-                        objRespuesta.codError = sQrData.codError;
-                        objRespuesta.descError = sQrData.descError;
+                                objRespuesta.id = sQrDataBNB.id;
+                                objRespuesta.qr = sQrDataBNB.qr;
+                                objRespuesta.codTransaction = dataQR.codTransaction;
+                                objRespuesta.success = sQrDataBNB.success;
+                                objRespuesta.message = sQrDataBNB.message;
+                                objRespuesta.codError = sQrDataBNB.codError;
+                                objRespuesta.descError = sQrDataBNB.descError;
+                                break;
+
+                            case 2:
+                                //servicos de BEC
+                                respTokenBEC tokenBEC = await objQrBEC.ObtenerTokenBEC();
+
+                                objBEC.trnQRData.accountCredit = dataQR.accountCode;
+
+                                sQrDataBEC = await objQrBEC.ObtenerQRData(objBEC, tokenBEC.token);
+
+                                objRespuesta.id = sQrDataBEC.qrId;
+                                objRespuesta.qr = sQrDataBEC.qrImage;
+                                objRespuesta.codTransaction = dataQR.codTransaction;
+                                objRespuesta.success = (sQrDataBEC.responseCode.Equals('0')) ? true : false ;
+                                objRespuesta.message = sQrDataBEC.message;
+                                objRespuesta.codError = sQrDataBEC.responseCode;
+                                objRespuesta.descError = sQrDataBEC.descError;
+                                break;
+
+                            case 3:
+                                objRespuesta.codError = "";
+                                objRespuesta.descError = "todavia no hay el 3";
+                                break;
+
+                            default:
+                                objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                                objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                                break;
+                        }
+
+
 
                     }
                     else
@@ -215,6 +281,7 @@ namespace Models.apiBantic
         public async Task<RespQRStatus> GetQRStat(QRStatus value) 
         {
             var objQrBNB = new QrBNB.QrBNB();
+            var objQrBEC = new QrBEC.QrBEC();
             var objRespuesta = new RespQRStatus();
             var objManageQR = new ManageQRCrud();
             var objQR = new ControlLoginCrud();
@@ -260,13 +327,50 @@ namespace Models.apiBantic
                 return objRespuesta;
             }
 
+
+            QRStatus objBNB = new QRStatus();
+            QRStatusBEC objBEC = new QRStatusBEC();
+
+            RespQRStatus sQrDataBNB = new RespQRStatus();
+            RespQRStatusBEC sQrDataBEC = new RespQRStatusBEC();
+            switch (value.codBank)
+            {
+                case 1:
+                    //input de BNB
+                    objBNB.idQRStat.qrId = value.idQRStat.qrId;
+                    objBNB.codBank = value.codBank;
+                    objBNB.codClient = value.codClient;
+                    objBNB.codTransaction = value.codTransaction;
+                    objBNB.user = value.user;   
+
+                   break;
+
+                case 2:
+                    //input de BEC
+                    objBEC.idQRStat.qrId = value.idQRStat.qrId;
+                    objBEC.codBank = value.codBank;
+                    objBEC.codClient = value.codClient;
+                    objBEC.codTransaction = value.codTransaction;
+                    objBEC.user = value.user;
+                    break;
+
+                case 3:
+                    Console.WriteLine("Seleccionaste la opción 3.");
+                    break;
+
+                default:
+                    objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    break;
+            }
+
             try                                     
             {                                    
                 objRespuesta.codError = "0";                    
                 objRespuesta.descError = "";                         
 
                 var IdLog = objManageQR.RegistrarManageQR("STATUS", value.codBank, "", "", 0, DateTime.Today, false,
-                    "", "-1", "", null, null, null, null, value.codTransaction, value.codClient, value.user);
+                    "", "-1", "", value.idQRStat.qrId, null, null, null, value.codTransaction, value.codClient, value.user);
 
                 //Validar datos con BD middleware cliente, banco y IdQR
                 var control = "";
@@ -274,18 +378,54 @@ namespace Models.apiBantic
 
                 if (control != "" && control != "0")
                 {
-                    respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
+                    switch (value.codBank)
+                    {
+                        case 1:
+                            //servicios de BNB
+                            respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
 
-                    RespQRStatus sQrData = await objQrBNB.ObtenerQREstado(value, token.message);
-                    objRespuesta.idQR = sQrData.id;
-                    objRespuesta.codTransaction = value.codTransaction;
-                    objRespuesta.statusId = sQrData.statusId;
-                    objRespuesta.expirationDate = sQrData.expirationDate;
-                    objRespuesta.voucherId = sQrData.voucherId;
-                    objRespuesta.success = sQrData.success;
-                    objRespuesta.message = sQrData.message;
-                    objRespuesta.codError = sQrData.codError;
-                    objRespuesta.descError = sQrData.descError;
+                            RespQRStatus sQrData = await objQrBNB.ObtenerQREstado(value, token.message);
+                            objRespuesta.idQR = sQrData.id;
+                            objRespuesta.codTransaction = value.codTransaction;
+                            objRespuesta.statusId = sQrData.statusId;
+                            objRespuesta.expirationDate = sQrData.expirationDate;
+                            objRespuesta.voucherId = sQrData.voucherId;
+                            objRespuesta.success = sQrData.success;
+                            objRespuesta.message = sQrData.message;
+                            objRespuesta.codError = sQrData.codError;
+                            objRespuesta.descError = sQrData.descError;
+                            break;
+
+                        case 2:
+                            //servicos de BEC
+                            respTokenBEC tokenBEC = await objQrBEC.ObtenerTokenBEC();
+
+                            objBEC.idQRStat.qrId = value.idQRStat.qrId;
+
+                            sQrDataBEC = await objQrBEC.ObtenerQREstado(objBEC, tokenBEC.token);
+
+                            //objRespuesta.idQR = (sQrDataBEC.payment.Count.Equals(0)) ? "0": sQrDataBEC.payment[0].qrId;
+                            objRespuesta.idQR = objBEC.idQRStat.qrId;
+                            objRespuesta.codTransaction = (sQrDataBEC.payment.Count.Equals(0)) ? "0" : sQrDataBEC.payment[0].transactionId;
+                            objRespuesta.statusId = sQrDataBEC.statusQRCode;
+                            objRespuesta.expirationDate = ""; // sQrDataBEC.payment.paymentDate;
+                            objRespuesta.voucherId = (sQrDataBEC.payment.Count.Equals(0)) ? "0" : sQrDataBEC.payment[0].senderAccount;
+                            objRespuesta.success = (sQrDataBEC.responseCode.Equals("0")) ? true : false;
+                            objRespuesta.message = sQrDataBEC.message;
+                            objRespuesta.codError = sQrDataBEC.responseCode;
+                            objRespuesta.descError = sQrDataBEC.descError;
+                            break;
+
+                        case 3:
+                            objRespuesta.codError = "";
+                            objRespuesta.descError = "todavia no hay el 3";
+                            break;
+
+                        default:
+                            objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                            objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                            break;
+                    }
                 }
                 else 
                 {
@@ -388,11 +528,11 @@ namespace Models.apiBantic
                 {
                     respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
 
-                    RespQRCancel sQrData = await objQrBNB.ObtenerQRCancelar(value, token.message);
-                    objRespuesta.success = sQrData.success;
-                    objRespuesta.message = sQrData.message;
-                    objRespuesta.codError = sQrData.codError;
-                    objRespuesta.descError = sQrData.descError;
+                    //RespQRCancel sQrData = await objQrBNB.ObtenerQRCancelar(value, token.message);
+                    //objRespuesta.success = sQrData.success;
+                    //objRespuesta.message = sQrData.message;
+                    //objRespuesta.codError = sQrData.codError;
+                    //objRespuesta.descError = sQrData.descError;
                 }
                 else 
                 {
@@ -429,7 +569,7 @@ namespace Models.apiBantic
 
         public RespQRNotification QRNotification(QRNotification value, string usuario)
         {
-            var objQrBNB = new QrBNB.QrBNB();
+            var objQrBNB = new QrBEC.QrBEC();
             var objRespuesta = new RespQRNotification();
             var objNotQR = new NotificactionCrud();
             var objQR = new ControlLoginCrud();
@@ -629,6 +769,7 @@ namespace Models.apiBantic
         {
             var objRespuesta = new RespUserData();  
             var objUserData = new UserDataCrud();
+            var objBankData = new BankDataCrud();
             
             //Validaciones 
             if (value.token == null || value.token == "") 
@@ -665,16 +806,6 @@ namespace Models.apiBantic
                 
             }
 
-            // Solicitar QR a Servicio de BNB 
-            //QREncryptedAdmin objBNB = new QREncryptedAdmin();
-            //objBNB.currency = dataQR.currency;
-            //objBNB.gloss = (dataQR.clientNote is null ? "" : dataQR.clientNote.ToString());
-            //objBNB.amount = dataQR.amount;
-            //objBNB.singleUse = dataQR.singleUse; //true or false
-            //objBNB.expirationDate = dataQR.expirationDate; // "2020-07-30";
-            //objBNB.additionalData = ""; //definir que dato va aqui
-            //objBNB.destinationAccountId = "1"; // 1 is BOB and 2 is USD
-
             try
             {
                 objRespuesta.codError = "0";
@@ -682,21 +813,32 @@ namespace Models.apiBantic
 
                 var IdLog = objUserData.GetUserData(value.user, value.password, value.token);
 
-                if (IdLog.IdCustomer != 0)
+               if (IdLog.IdCustomer != 0)
                 {                    
-                        objRespuesta.NameUser = IdLog.NameUser;
+                   objRespuesta.NameUser = IdLog.NameUser;
                         objRespuesta.IdUser = IdLog.IdUser;
                         objRespuesta.TypeUser = IdLog.TypeUser.Trim();
                         objRespuesta.IdCustomer = IdLog.IdCustomer;
                         objRespuesta.Customer = IdLog.Customer;
-                        objRespuesta.IdBank = IdLog.IdBank;
-                        objRespuesta.CodBank = IdLog.CodBank;
-                        objRespuesta.Bank = IdLog.Bank;
+
+                    var bancos = objBankData.GetBankData(IdLog.IdCustomer);
+
+                    foreach (BankDatum banks in bancos)
+                    {
+                        var listBank = new IDBanks();
+                        listBank.idBank = banks.IdBank;
+                        listBank.CodBank = banks.CodBank;
+                        listBank.bank = banks.Bank;
+
+                        objRespuesta.banks.Add(listBank);
+                    }
                 }
                 else
                 {
                         objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
                         objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    //objRespuesta.codError = ErrorType.er_SinClientBank.Id.ToString();
+                    //objRespuesta.descError = ErrorType.er_SinClientBank.Name.ToString();
                 }
 
             }
@@ -706,8 +848,7 @@ namespace Models.apiBantic
                 objRespuesta.descError = ErrorType.er_Inesperado.Name.ToString() + "---" + ex.Message;
             }
           
-                return objRespuesta;
-           
+                return objRespuesta;           
         }
     }
 }
