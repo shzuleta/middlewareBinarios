@@ -73,5 +73,33 @@ namespace FBapiService.DataDB
             }
 
         }
+
+        public dynamic BuscarNotificationUser(string IdQR, string usuario)
+        {
+            try
+            {
+                using (var dbContext = new BanticfintechContext())
+                {
+                    Notification registros1 = new Notification();
+                    var registros = dbContext.Notifications.FirstOrDefault(p => p.IdQr == IdQR && p.CreateUser == usuario);
+
+                    if (registros != null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return ex.Message;
+            }
+
+        }
     }
 }

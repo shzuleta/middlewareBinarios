@@ -22,6 +22,7 @@ using Models.QrBNB;
 using Models.GeneraQRBEC;
 using System.Net.NetworkInformation;
 using FBapiService.Models.GeneraQRBEC;
+using System.Runtime.CompilerServices;
 
 namespace Models.apiBantic
 {
@@ -1017,20 +1018,32 @@ namespace Models.apiBantic
                 objRespuesta.responseCode = 0;
                 objRespuesta.message = "OK";
 
-                //solo registrara los datos de la notificacion que llega del Banco
-                var IdLog = objNotQR.RegistrarNotificationQR(value.QRId, value.paymentTime, int.Parse(value.senderBankCode), value.senderName,
-                    value.transactionId, value.paymentDate, value.currency + " " + value.amount.ToString(), "", "0", usuario);
-                
-                if (IdLog is string)
+                //valida si el IdQR ya fue notificado
+                var Result = objNotQR.BuscarNotificationUser(value.QRId, usuario);
+
+                if (!Result) 
                 {
-                    objRespuesta.responseCode = 200;
-                    objRespuesta.message = IdLog;
+                    objRespuesta.responseCode = 201;
+                    objRespuesta.message = "Ya existe la notificacion del IdQR: " + value.QRId;
                 }
                 else
                 {
-                    objRespuesta.responseCode = 0;
-                    objRespuesta.message = "OK";
+                    //solo registrara los datos de la notificacion que llega del Banco
+                    var IdLog = objNotQR.RegistrarNotificationQR(value.QRId, value.paymentTime, int.Parse(value.senderBankCode), value.senderName,
+                        value.transactionId, value.paymentDate, value.currency + " " + value.amount.ToString(), "", "0", usuario);
+
+                    if (IdLog is string)
+                    {
+                        objRespuesta.responseCode = 200;
+                        objRespuesta.message = IdLog;
+                    }
+                    else
+                    {
+                        objRespuesta.responseCode = 0;
+                        objRespuesta.message = "OK";
+                    }
                 }
+               
             }
             catch (Exception ex)
             {
