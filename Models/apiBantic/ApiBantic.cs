@@ -1016,7 +1016,7 @@ namespace Models.apiBantic
             try
             {
                 objRespuesta.responseCode = 0;
-                objRespuesta.message = "OK";
+                objRespuesta.message = "";
 
                 //valida si el IdQR ya fue notificado
                 var Result = objNotQR.BuscarNotificationUser(value.QRId, usuario);
@@ -1040,7 +1040,7 @@ namespace Models.apiBantic
                     else
                     {
                         objRespuesta.responseCode = 0;
-                        objRespuesta.message = "OK";
+                        objRespuesta.message = "";
                     }
                 }
                
