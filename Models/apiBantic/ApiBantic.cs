@@ -190,6 +190,8 @@ namespace Models.apiBantic
                 ControlLogin objControl = new ControlLogin();
                 objControl = objLogin.GetClienteBanco(dataQR.codClient, dataQR.codBank);
 
+                string transactionIdBEC = "";
+
                 if (objControl.ExpirationTime >= DateTime.Now)
                 {
                     if (objControl.IdCustomer != 0)
@@ -226,6 +228,7 @@ namespace Models.apiBantic
                                 objRespuesta.message = sQrDataBEC.message;
                                 objRespuesta.codError = sQrDataBEC.responseCode;
                                 objRespuesta.descError = sQrDataBEC.descError;
+                                //transactionIdBEC = sQrDataBEC.transactionId;
                                 break;
 
                             case 3:
@@ -464,6 +467,7 @@ namespace Models.apiBantic
         public async Task<RespQRCancel> SetQRCancel(QRCancel value)
         {
             var objQrBNB = new QrBNB.QrBNB();
+            var objQrBEC = new QrBEC.QrBEC();
             var objRespuesta = new RespQRCancel();
             var objManageQR = new ManageQRCrud();
             var objQR = new ControlLoginCrud();
@@ -510,6 +514,42 @@ namespace Models.apiBantic
                 return objRespuesta;
             }
 
+            QRCancel objBNB = new QRCancel();
+            QRCancelBEC objBEC = new QRCancelBEC();
+
+            RespQRCancel sQrDataBNB = new RespQRCancel();
+            RespQRCancelBEC sQrDataBEC = new RespQRCancelBEC();
+            switch (value.codBank)
+            {
+                case 1:
+                    //input de BNB
+                    objBNB.idQRCancel.qrId = value.idQRCancel.qrId;
+                    objBNB.codBank = value.codBank;
+                    objBNB.codClient = value.codClient;
+                    objBNB.codTransaction = value.codTransaction;
+                    objBNB.user = value.user;
+
+                    break;
+
+                case 2:
+                    //input de BEC
+                    objBEC.idQRCancelBEC = value.idQRCancel;
+                    objBEC.codBank = value.codBank;
+                    objBEC.codClient = value.codClient;
+                    objBEC.codTransaction = value.codTransaction;
+                    objBEC.user = value.user;
+                    break;
+
+                case 3:
+                    Console.WriteLine("Seleccionaste la opción 3.");
+                    break;
+
+                default:
+                    objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                    objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                    break;
+            }
+
             try
             {
 
@@ -526,13 +566,44 @@ namespace Models.apiBantic
 
                 if (control != "" && control != "0") 
                 {
-                    respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
+                    switch (value.codBank)
+                    {
+                        case 1:
+                            //servicios de BNB
+                            respTokenBNB token = await objQrBNB.ObtenerTokenBNB();
 
-                    //RespQRCancel sQrData = await objQrBNB.ObtenerQRCancelar(value, token.message);
-                    //objRespuesta.success = sQrData.success;
-                    //objRespuesta.message = sQrData.message;
-                    //objRespuesta.codError = sQrData.codError;
-                    //objRespuesta.descError = sQrData.descError;
+                            RespQRCancel sQrData = await objQrBNB.ObtenerQRCancelar(value, token.message);
+                            objRespuesta.success = sQrData.success;
+                            objRespuesta.message = sQrData.message;
+                            objRespuesta.codError = sQrData.codError;
+                            objRespuesta.descError = sQrData.descError;
+                            break;
+
+                        case 2:
+                            //servicos de BEC
+                            respTokenBEC tokenBEC = await objQrBEC.ObtenerTokenBEC();
+
+                            sQrDataBEC = await objQrBEC.ObtenerQRCancelar(objBEC, tokenBEC.token);
+
+                            //objRespuesta.idQR = (sQrDataBEC.payment.Count.Equals(0)) ? "0": sQrDataBEC.payment[0].qrId;
+                            objRespuesta.idQR = objBEC.idQRCancelBEC.qrId;
+                            objRespuesta.codTransaction = objBEC.codTransaction;
+                            objRespuesta.success = (sQrDataBEC.responseCode.Equals("0")) ? true : false;
+                            objRespuesta.message = sQrDataBEC.message;
+                            objRespuesta.codError = sQrDataBEC.responseCode;
+                            objRespuesta.descError = sQrDataBEC.message;
+                            break;
+
+                        case 3:
+                            objRespuesta.codError = "";
+                            objRespuesta.descError = "todavia no hay el 3";
+                            break;
+
+                        default:
+                            objRespuesta.codError = ErrorType.er_SinCodigos.Id.ToString();
+                            objRespuesta.descError = ErrorType.er_SinCodigos.Name.ToString();
+                            break;
+                    }
                 }
                 else 
                 {
@@ -569,7 +640,7 @@ namespace Models.apiBantic
 
         public RespQRNotification QRNotification(QRNotification value, string usuario)
         {
-            var objQrBNB = new QrBEC.QrBEC();
+            var objQrBNB = new QrBNB.QrBNB();
             var objRespuesta = new RespQRNotification();
             var objNotQR = new NotificactionCrud();
             var objQR = new ControlLoginCrud();
@@ -849,6 +920,127 @@ namespace Models.apiBantic
             }
           
                 return objRespuesta;           
+        }
+
+        public RespQRNotificationBEC QRNotificationBEC(QRNotificationBEC value, string usuario)
+        {
+            var objQrBEC = new QrBEC.QrBEC();
+            var objRespuesta = new RespQRNotificationBEC();
+            var objNotQR = new NotificactionCrud();
+            var objQR = new ControlLoginCrud();
+
+            if (value.QRId.Equals("0"))
+            {
+                objRespuesta.responseCode = 120;
+                objRespuesta.message = "QRId no puede ser igual a 0";
+                return objRespuesta;
+            }
+            if (value.QRId.Equals(""))
+            {
+                objRespuesta.responseCode = 121;
+                objRespuesta.message = "QRId no puede ser igual a vacio";
+                return objRespuesta;
+            }
+            if (value.QRId.Equals(null))
+            {
+                objRespuesta.responseCode = 122;
+                objRespuesta.message = "QRId no puede ser nulo";
+                return objRespuesta;
+            }
+            if (value.transactionId.Equals(""))
+            {
+                objRespuesta.responseCode = 130;
+                objRespuesta.message = "La glosa esta vacio";
+                return objRespuesta;
+            }
+
+            if (value.senderBankCode.Equals(0))
+            {
+                objRespuesta.responseCode = 140;
+                objRespuesta.message = "El codigo de banco pagador no puede ser 0";
+                return objRespuesta;
+            }
+            if (value.senderBankCode.Equals(null))
+            {
+                objRespuesta.responseCode = 141;
+                objRespuesta.message = "El codigo de banco pagador no puede ser nulo";
+                return objRespuesta;
+            }
+
+            if (value.senderName.Equals(""))
+            {
+                objRespuesta.responseCode = 150;
+                objRespuesta.message = "El nombre del pagador no puede ser vacio";
+                return objRespuesta;
+            }
+            if (value.senderName.Equals(null))
+            {
+                objRespuesta.responseCode = 151;
+                objRespuesta.message = "El nombre del pagador no puede ser nulo";
+                return objRespuesta;
+            }
+
+            if (value.paymentDate.Equals(null))
+            {
+                objRespuesta.responseCode = 160;
+                objRespuesta.message = "paymentDate no puede ser nulo";
+                return objRespuesta;
+            }
+            if (value.paymentTime.Equals(null))
+            {
+                objRespuesta.responseCode = 170;
+                objRespuesta.message = "paymentTime no puede ser nulo";
+                return objRespuesta;
+            }
+            if (value.currency.Equals(""))
+            {
+                objRespuesta.responseCode = 180;
+                objRespuesta.message = "Currency no puede ser vacio";
+                return objRespuesta;
+            }
+            if (value.currency.Equals(null))
+            {
+                objRespuesta.responseCode = 181;
+                objRespuesta.message = "Currency no puede ser nulo";
+                return objRespuesta;
+            }
+
+            if (value.amount.Equals(0))
+            {
+                objRespuesta.responseCode = 190;
+                objRespuesta.message = "amount no puede ser cero";
+                return objRespuesta;
+            }
+
+            try
+            {
+                objRespuesta.responseCode = 0;
+                objRespuesta.message = "OK";
+
+                //solo registrara los datos de la notificacion que llega del Banco
+                var IdLog = objNotQR.RegistrarNotificationQR(value.QRId, value.paymentTime, int.Parse(value.senderBankCode), value.senderName,
+                    value.transactionId, value.paymentDate, value.currency + " " + value.amount.ToString(), "", "0", usuario);
+                
+                if (IdLog is string)
+                {
+                    objRespuesta.responseCode = 200;
+                    objRespuesta.message = IdLog;
+                }
+                else
+                {
+                    objRespuesta.responseCode = 0;
+                    objRespuesta.message = "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                objRespuesta.responseCode = 200;
+                objRespuesta.message = ex.Message;
+            }
+
+            objQrBEC.Dispose();
+
+            return objRespuesta;
         }
     }
 }

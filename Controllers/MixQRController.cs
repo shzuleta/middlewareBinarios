@@ -12,6 +12,7 @@ using FBapiService.DataDB;
 using Newtonsoft.Json.Linq;
 using FBapiService.Security;
 using Models.GeneraQRBEC;
+using FBapiService.Models.GeneraQRBEC;
 
 namespace FBapiService.Controllers
 {
@@ -283,7 +284,7 @@ namespace FBapiService.Controllers
             return objRespuesta;
         }
 
-//**************Servicios para BNB***********************
+        //**************Servicios para BNB***********************
         [HttpPost]
         [Authorize(AuthenticationSchemes = "BasicAuthentication")]
         [Route("ReceiveNotification")]
@@ -298,8 +299,20 @@ namespace FBapiService.Controllers
             return objRespuesta;
         }
 
- //*************Servicios para BEC***********************
-        
+        //*************Servicios para BEC***********************
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "BasicAuthentication")]
+        [Route("notifyPaymentQR")]
+        public async Task<RespQRNotificationBEC> ReceiveNotificationBEC(QRNotificationBEC value)
+        {
+            var objSAAS = new ApiBantic();
+            //var identity = Thread.CurrentPrincipal.Identity;
+            //objSAAS.Usuario = identity.Name;
+            var objRespuesta = new RespQRNotificationBEC();
+            objRespuesta = objSAAS.QRNotificationBEC(value, "BEC");
+
+            return objRespuesta;
+        }
 
     }      
     

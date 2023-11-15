@@ -87,6 +87,13 @@ C:\Users\dell\Documents\repositorio\FBapiService\obj\Debug\net6.0\refint\FBapiSe
 C:\Users\dell\Documents\repositorio\FBapiService\obj\Debug\net6.0\FBapiService.pdb
 C:\Users\dell\Documents\repositorio\FBapiService\obj\Debug\net6.0\FBapiService.genruntimeconfig.cache
 C:\Users\dell\Documents\repositorio\FBapiService\obj\Debug\net6.0\ref\FBapiService.dll
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.csproj.AssemblyReference.cache
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.AssemblyInfoInputs.cache
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.AssemblyInfo.cs
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.csproj.CoreCompileInputs.cache
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\appsettings.Development.json
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\appsettings.json
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\FBapiService.exe
@@ -94,6 +101,7 @@ C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\FBapiService.dep
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\FBapiService.runtimeconfig.json
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\FBapiService.dll
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\FBapiService.pdb
+C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\AspNetCore.Authentication.ApiKey.dll
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\Azure.Core.dll
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\Azure.Identity.dll
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\Humanizer.dll
@@ -155,13 +163,6 @@ C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\runtimes\win\lib
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.csproj.AssemblyReference.cache
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.AssemblyInfoInputs.cache
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.AssemblyInfo.cs
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.csproj.CoreCompileInputs.cache
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\staticwebassets\msbuild.FBapiService.Microsoft.AspNetCore.StaticWebAssets.props
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\staticwebassets\msbuild.build.FBapiService.props
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.FBapiService.props
@@ -176,4 +177,3 @@ C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\refint\FBapiServ
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.pdb
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\FBapiService.genruntimeconfig.cache
 C:\Users\dell\Documents\Proyectos\FBapiService\obj\Debug\net6.0\ref\FBapiService.dll
-C:\Users\dell\Documents\Proyectos\FBapiService\bin\Debug\net6.0\AspNetCore.Authentication.ApiKey.dll

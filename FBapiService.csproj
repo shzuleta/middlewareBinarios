@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="DataDB\BanticanFintechContext.cs" />
+    <Compile Remove="Models\GenerarQRBEC\RespQRNotification.cs" />
   </ItemGroup>
 
   <ItemGroup>

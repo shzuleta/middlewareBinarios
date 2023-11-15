@@ -22,6 +22,8 @@ using Models.GeneraQRBEC;
 using FBapiService.Models.GeneraQRBEC;
 using System.Text.Json;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection.Metadata;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Models.QrBEC
 {
@@ -247,7 +249,7 @@ namespace Models.QrBEC
 
         }
 
-        public async Task<RespQRCancel> ObtenerQRCancelar(QRCancel value, string token)
+        public async Task<RespQRCancelBEC> ObtenerQRCancelar(QRCancelBEC value, string token)
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -257,58 +259,56 @@ namespace Models.QrBEC
             .AddJsonFile("archivodos.json", optional: true, reloadOnChange: true);
             IConfiguration configuration = builder.Build();
 
-            string url = configuration["URL_BNB_CANCELQR"];
+            string url = configuration["URL_BEC_CANCELQR"]; 
 
             using (HttpClient client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMinutes(5);
-                HttpContent objRespuesta;
+                StringContent objContent;
+                HttpResponseMessage response;
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                string obSeriaJson = JsonConvert.SerializeObject(value.idQRCancel);
-                objRespuesta = new StringContent(obSeriaJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage result = null;
+                string obSeriaJson = JsonConvert.SerializeObject(value.idQRCancelBEC);
+                objContent = new StringContent(obSeriaJson, Encoding.UTF8, "application/json");
 
-                RespQRCancel objRes = new RespQRCancel();
-                objRes.codError = "0";
-                objRes.descError = "";
+                RespQRCancelBEC objRes = new RespQRCancelBEC();
+                objRes.responseCode = "0";
+                objRes.message = "";
 
                 try
                 {
-                    result = await client.PostAsync(url, objRespuesta);
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
+                    request.Content = objContent;
 
+                    response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string Resultado = await response.Content.ReadAsStringAsync();
+                        objRes = JsonConvert.DeserializeObject<RespQRCancelBEC>(Resultado.ToString());
+                        response.Dispose();
+                    }
+                    else
+                    {
+                        objRes.responseCode = response.StatusCode.ToString();
+                        objRes.message = response.RequestMessage.ToString();
+                        response.Dispose();
+                        
+                    }
                 }
                 catch (Exception e)
                 {
-                    objRes.codError = ErrorType.er_Inesperado.Id.ToString();
-                    objRes.descError = e.Message;
+                    objRes.responseCode = ErrorType.er_Inesperado.Id.ToString();
+                    objRes.message = e.Message;
                     //var obj = e.Message;
                 }
 
-                if (!result.IsSuccessStatusCode)
-                {
-                    objRes.codError = ErrorType.er_Inesperado.Id.ToString();
-                    objRes.descError = "Error en el input json";
-                    //throw new Exception("No se conecto con el servidor QRDATA " + result.StatusCode.ToString());
-                }
-                string Resultado = await result.Content.ReadAsStringAsync();
-                objRes = JsonConvert.DeserializeObject<RespQRCancel>(Resultado);
-                if (result.StatusCode.ToString().Equals("OK"))
-                {
-                    objRes.codError = "0";
-                }
-                else
-                {
-                    objRes.codError = ErrorType.er_Inesperado.Id.ToString();
-                }
-                objRes.descError = result.StatusCode.ToString();
-
                 client.Dispose();
-                objRespuesta.Dispose();
-                result.Dispose();
+                objContent.Dispose();
+                //response.Dispose();
 
                 return objRes;
             }
