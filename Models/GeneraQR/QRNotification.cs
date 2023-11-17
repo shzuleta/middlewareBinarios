@@ -7,7 +7,7 @@
         public int sourceBankId { get; set; }
         public string originName { get; set; }
         public string VoucherId { get; set; }
-        public DateTime TransactionDateTime { get; set; }
+        public string TransactionDateTime { get; set; }
         public string additionalData { get; set; }
    
     }

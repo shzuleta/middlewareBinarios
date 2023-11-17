@@ -730,7 +730,7 @@ namespace Models.apiBantic
 
                 //solo registrara los datos de la notificacion que llega del Banco
                 var IdLog = objNotQR.RegistrarNotificationQR(value.QRId, value.Gloss, value.sourceBankId, value.originName,
-                    value.VoucherId, value.TransactionDateTime, value.additionalData, "", "0", usuario);
+                    value.VoucherId, DateTime.Parse(value.TransactionDateTime), value.additionalData, "", "0", usuario);
 
                 if (IdLog is string)
                 {
