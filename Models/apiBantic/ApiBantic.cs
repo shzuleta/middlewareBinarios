@@ -23,6 +23,7 @@ using Models.GeneraQRBEC;
 using System.Net.NetworkInformation;
 using FBapiService.Models.GeneraQRBEC;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 
 namespace Models.apiBantic
 {
@@ -730,7 +731,7 @@ namespace Models.apiBantic
 
                 //solo registrara los datos de la notificacion que llega del Banco
                 var IdLog = objNotQR.RegistrarNotificationQR(value.QRId, value.Gloss, value.sourceBankId, value.originName,
-                    value.VoucherId, DateTime.Parse(value.TransactionDateTime), value.additionalData, "", "0", usuario);
+                    value.VoucherId, DateTime.ParseExact(value.TransactionDateTime, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture), value.additionalData, "", "0", usuario);
 
                 if (IdLog is string)
                 {
